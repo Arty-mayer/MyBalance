@@ -1,0 +1,8 @@
+
+Ÿ
+java:S1104"WMake preferences a static final constant or non-public and provide accessors if needed.(¨ÁêÑÿÿÿÿÿ8ç£™Ùª2J$a6dc2f99-ffdd-4b70-b093-1bee15ffd512
+y
+java:S1444"1Make this "public static preferences" field final(¨ÁêÑÿÿÿÿÿ8èàÙª2J$e5b6c8c1-9d12-4fb0-9bdf-a1cdaf8e934b
+¡	java:S120"ZRename this package name to match the regular expression '^[a-z_]+(\.[a-z_][a-z0-9_]*)*$'.(Ã¤Òıÿÿÿÿ8ç£™Ùª2J$138151ed-0195-4e30-84e1-4065cf1f806b
+}
+java:S1118":Add a private constructor to hide the implicit public one.(ø®õñ8ìàÙª2J$624a3a5d-f780-46dc-81dd-11795e67d626

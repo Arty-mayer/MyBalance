@@ -1,0 +1,10 @@
+
+¥
+java:S1488("bImmediately return this expression instead of assigning it to the temporary variable "viewHolder".(€ƒ¡8¬Ïª2J$f1981e42-774e-4a66-bec3-d0eb5705b813
+ƒ	java:S125"<This block of commented-out lines of code should be removed.(Ä’ÿÿÿÿÿ8¼©®Ïª2J$b117ca55-a1a5-431f-932c-d44271c20a6c
+x
+java:S1854@"6Remove this useless assignment to local variable "tp".(¨Ã®)8Ÿ¬Ïª2J$85c11264-37f5-42f9-9db2-e301d698e4eb
+i
+java:S1481@"'Remove this unused "tp" local variable.(¨Ã®)8¢¬Ïª2J$f2fe5e1b-c3dc-47e1-af20-5622606821e2
+v
+java:S1481j".Remove this unused "accountId" local variable.(ã‘ˆ½øÿÿÿÿ8²¢²Ïª2J$b79d0568-0118-4172-bcb0-fc7687399c4b

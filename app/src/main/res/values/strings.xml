@@ -1,0 +1,31 @@
+<resources>
+    <string name="app_name">MyBalance</string>
+    <string name="home">Home</string>
+    <string name="dashboard">Dashboard</string>
+    <string name="notifications">Notifications</string>
+    <string name="income">Income</string>
+    <string name="expenses">Expenses</string>
+    <string name="cash">Cash</string>
+    <string name="cards_account">Cards Account</string>
+    <string name="accounts">Accounts</string>
+    <string name="database_updating">Database updating</string>
+    <string name="add_an_account">Add an account</string>
+    <string name="account_name">Accounts name</string>
+    <string name="add">Add</string>
+    <string name="symbol">Symbol</string>
+    <string name="currency_name">Name</string>
+    <string name="notice1">Select the currency symbol or name:</string>
+    <string name="notice_or">or</string>
+    <string name="amount">"amount: "</string>
+    <string name="edit">Edit...</string>
+    <string name="back">Back</string>
+    <string name="editor_notice_2">Description (optional):</string>
+    <string name="editor_notice_1">Accounts name:</string>
+    <string name="editor_default">Default account</string>
+    <string name="editor_save_button">Save</string>
+    <string name="delete">Delete</string>
+    <string name="confirmation">Confirmation</string>
+    <string name="delete1">Delete?</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+</resources>

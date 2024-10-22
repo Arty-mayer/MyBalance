@@ -1,0 +1,21 @@
+
+›
+java:S1104"SMake appLang a static final constant or non-public and provide accessors if needed.(¨ßò şÿÿÿÿ8„µàû©2J$39ba4329-dadf-473a-b883-9ec8a150a95b
+u
+java:S1444"-Make this "public static appLang" field final(¨ßò şÿÿÿÿ8…µàû©2J$dcd67c3a-308c-4b97-9769-269881dc55b6
+¡	java:S120"ZRename this package name to match the regular expression '^[a-z_]+(\.[a-z_][a-z0-9_]*)*$'.(Ã¤Òıÿÿÿÿ8…µàû©2J$0a01286c-eac0-42a0-a94f-0a0634aca515
+e
+java:S1118"Hide this public constructor.(³ìÒüÿÿÿÿ8µàû©2J$686308e0-ef0f-4fcc-9db0-b2117fc668d4
+g
+java:S3010"$Remove this assignment of "appLang".(ãÜ¬Û8’µàû©2J$c111010f-da68-4127-a02d-e888160efd79
+–
+java:S1128"NRemove this unused import 'androidx.core.app.PendingIntentCompat.getActivity'.(­“ÈĞùÿÿÿÿ8“µàû©2J$b681aa5a-977c-49e3-934e-ad3dcacff8a2
+€
+java:S1128">Remove this unused import 'android.content.SharedPreferences'.(íÎÉr8“µàû©2J$629d1f9b-9c28-4e90-a6db-e2a167228315
+†
+java:S1128">Remove this unused import 'android.content.res.Configuration'.(ßºÊƒûÿÿÿÿ8“µàû©2J$7944cd9d-1e48-4c7d-9980-c31fc2c90239
+u
+java:S1128"-Remove this unused import 'android.os.Build'.(ãÇ¤Úıÿÿÿÿ8“µàû©2J$5c802c76-e4ac-4faa-9e43-8aa02830ff80
+‡
+java:S1128
+"?Remove this unused import 'com.example.mybalance.MainActivity'.(ÎÈ‚õúÿÿÿÿ8“µàû©2J$bde20b2d-bafc-4320-a0bd-ce661e2adf2b

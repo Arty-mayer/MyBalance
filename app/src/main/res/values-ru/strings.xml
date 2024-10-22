@@ -1,0 +1,31 @@
+<resources>
+    <string name="app_name">Мои финансы</string>
+    <string name="home">Главная</string>
+    <string name="dashboard">Доска</string>
+    <string name="notifications">Уведомления</string>
+    <string name="income">Доходы</string>
+    <string name="expenses">Расходы</string>
+    <string name="cash">Наличные</string>
+    <string name="cards_account">Карточный счёт</string>
+    <string name="accounts">Мои счета</string>
+    <string name="database_updating">Обновление базы данных</string>
+    <string name="add_an_account">Добавить счёт</string>
+    <string name="account_name">Название счёта</string>
+    <string name="add">Добавить</string>
+    <string name="symbol">Символ</string>
+    <string name="currency_name">Название</string>
+    <string name="notice1">Выберите символ или название валюты:</string>
+    <string name="notice_or">или</string>
+    <string name="amount">"amount: "</string>
+    <string name="edit">Изменить</string>
+    <string name="back">Назад</string>
+    <string name="editor_notice_2">Описание (опционально):</string>
+    <string name="editor_notice_1">Название счёта:</string>
+    <string name="editor_default">Основной</string>
+    <string name="editor_save_button">Сохранить</string>
+    <string name="delete">Удалить</string>
+    <string name="confirmation">Confirmation</string>
+    <string name="delete1">Delete?</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+</resources>

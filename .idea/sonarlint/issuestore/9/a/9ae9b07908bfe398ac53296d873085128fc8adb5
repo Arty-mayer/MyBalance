@@ -1,0 +1,22 @@
+
+“
+java:S1104	"PMake name a static final constant or non-public and provide accessors if needed.( şÍ¾8æµ§„ª2J$4f52ae61-2e39-488f-96e4-f02690b08dff
+Ÿ
+java:S1104
+"WMake description a static final constant or non-public and provide accessors if needed.(¹ÿ†ğÿÿÿÿÿ8æµ§„ª2J$b84b6999-d15a-4f8b-8e7c-948f9944f1c9
+•
+java:S1104"RMake amount a static final constant or non-public and provide accessors if needed.(±Æ®¶8æµ§„ª2J$7d62b6ce-987d-4a0f-b462-f8abcdc2cd85
+¢
+java:S1104"ZMake lastIncomeDate a static final constant or non-public and provide accessors if needed.(Ôüºêùÿÿÿÿ8æµ§„ª2J$4ec32794-20aa-4cfb-af77-d192963550cd
+¤
+java:S1104"\Make lastIncomeAmount a static final constant or non-public and provide accessors if needed.(şëºüÿÿÿÿ8æµ§„ª2J$53f4088d-c891-43a9-b8c4-2cf18d2c1419
+Ÿ
+java:S1104"\Make lastExpensesDate a static final constant or non-public and provide accessors if needed.(¼¶¹¿8æµ§„ª2J$cd8c4718-95d1-4bb0-955e-c8b0dea69986
+¡
+java:S1104"^Make lastExpensesAmount a static final constant or non-public and provide accessors if needed.(±ø¼ì8æµ§„ª2J$e4b60d8c-41b2-424f-a49d-8a5242df8a85
+
+java:S1104"VMake currencyId a static final constant or non-public and provide accessors if needed.(Ë¯‡Öûÿÿÿÿ8°«„ª2J$f6e87bb4-0452-4f6a-a786-371778287c90
+¡	java:S120"ZRename this package name to match the regular expression '^[a-z_]+(\.[a-z_][a-z0-9_]*)*$'.(¿ùÿóÿÿÿÿÿ8çµ§„ª2J$b66151e5-b15f-4abd-8e66-770be94bbcda
+Ä
+java:S1186"€Add a nested comment explaining why this method is empty, throw an UnsupportedOperationException or complete the implementation.(¯Ú„8¶«„ª2J$934d5c2e-ebf5-426b-9533-8ea141b4e33e
+~	java:S125"<This block of commented-out lines of code should be removed.(üü€8íµ§„ª2J$7464ce31-691b-4634-81d6-3d90dc19e66b
