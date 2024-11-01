@@ -16,7 +16,7 @@
     <string name="currency_name">Name</string>
     <string name="notice1">Select the currency symbol or name:</string>
     <string name="notice_or">or</string>
-    <string name="amount">"amount: "</string>
+    <string name="amount">Amount</string>
     <string name="edit">Edit...</string>
     <string name="back">Back</string>
     <string name="editor_notice_2">Description (optional):</string>
@@ -28,4 +28,7 @@
     <string name="delete1">Delete?</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>
+    <string name="account">Account:</string>
+    <string name="balance">Balance</string>
+    <string name="all_accounts">All accts</string>
 </resources>

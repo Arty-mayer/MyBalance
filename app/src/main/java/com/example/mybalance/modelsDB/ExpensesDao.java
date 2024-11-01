@@ -17,8 +17,17 @@ public interface ExpensesDao {
     void delete(Expenses expense);
 
     @Update
-    void updeate(Expenses expense);
+    void update(Expenses expense);
 
     @Query("SELECT * FROM Expenses")
     List<Expenses> getAllExpenses();
+
+    @Query("SELECT * FROM Expenses WHERE accountsId = :id")
+    List<Expenses> getExpensesByAccountsId(int id);
+
+    @Query("SELECT * FROM Expenses WHERE date BETWEEN :date1 AND :date2")
+    List<Expenses> getExpensesRange(String date1, String date2);
+
+    @Query("SELECT * FROM Expenses WHERE accountsId = :id AND date BETWEEN :date1 AND :date2")
+    List<Expenses> getExpensesRangeByAccount(String date1, String date2, int id);
 }

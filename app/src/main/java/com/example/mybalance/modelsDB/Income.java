@@ -12,6 +12,7 @@ public class Income {
     public String date;
     public float amount;
     public String photo_file_name;
+    public  int accountsId;
 
     public Income() {
     }
@@ -23,10 +24,17 @@ public class Income {
         this.photo_file_name = photo_file_name;
     }
 
+    public int getAccountsId() {
+        return accountsId;
+    }
+
+    public void setAccountsId(int accountsId) {
+        this.accountsId = accountsId;
+    }
+
     public long getId() {
         return id;
     }
-
 
     public String getName() {
         return name;

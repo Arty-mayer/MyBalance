@@ -1,4 +1,5 @@
 package com.example.mybalance.modelsDB;
+
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
@@ -13,32 +14,50 @@ public class Accounts {
     public float lastIncomeAmount;
     public String lastExpensesDate;
     public float lastExpensesAmount;
-   public int currencyId;
+    public int currencyId;
+    public String currencyCharCode;
+    public String currencySymbol;
+
+    public String getCurrencySymbol() {
+        return currencySymbol;
+    }
+
+    public void setCurrencySymbol(String currencySymbol) {
+        this.currencySymbol = currencySymbol;
+    }
+
+    public String getCurrencyCharCode() {
+        return currencyCharCode;
+    }
+
+    public void setCurrencyCharCode(String currencyCharCode) {
+        this.currencyCharCode = currencyCharCode;
+    }
 
     public int getCurrencyId() {
         return currencyId;
     }
 
     public void setCurrencyId(int currencyId) {
-       this.currencyId = currencyId;
+        this.currencyId = currencyId;
     }
 
     public Accounts() {
     }
 
 
-/*
-    public Accounts(String name, String description, float amount, String lastIncomeDate, float lastIncomeAmount, String lastExpensesDate, float lastExpensesAmount) {
+    /*
+        public Accounts(String name, String description, float amount, String lastIncomeDate, float lastIncomeAmount, String lastExpensesDate, float lastExpensesAmount) {
 
-        this.name = name;
-        this.description = description;
-        this.amount = amount;
-        this.lastIncomeDate = lastIncomeDate;
-        this.lastIncomeAmount = lastIncomeAmount;
-        this.lastExpensesDate = lastExpensesDate;
-        this.lastExpensesAmount = lastExpensesAmount;
-    }
-*/
+            this.name = name;
+            this.description = description;
+            this.amount = amount;
+            this.lastIncomeDate = lastIncomeDate;
+            this.lastIncomeAmount = lastIncomeAmount;
+            this.lastExpensesDate = lastExpensesDate;
+            this.lastExpensesAmount = lastExpensesAmount;
+        }
+    */
     public int getId() {
         return id;
     }

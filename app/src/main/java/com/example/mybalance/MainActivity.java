@@ -52,7 +52,7 @@ public class MainActivity extends AppCompatActivity {
                     selectedFragment = new FragmentIncome();
                 }
                 if (item.getItemId() == R.id.nav_expenses){
-                    selectedFragment = new FragmentIncome();
+                    selectedFragment = new FragmentExpenses();
                 }
 
                 if (selectedFragment != null) {

@@ -17,6 +17,7 @@ import com.example.mybalance.modelsDB.ExpensesDao;
 import com.example.mybalance.R;
 import com.example.mybalance.Utils.DbTableSQL;
 
+import java.util.List;
 import java.util.concurrent.Executors;
 
 import com.example.mybalance.modelsDB.AccountsDao;
@@ -26,7 +27,7 @@ import com.example.mybalance.modelsDB.IncomeDao;
 import com.example.mybalance.modelsDB.Month;
 import com.example.mybalance.modelsDB.MonthDao;
 
-@Database(entities = {Accounts.class, Expenses.class, Income.class, Month.class, Currency.class}, version = 3)
+@Database(entities = {Accounts.class, Expenses.class, Income.class, Month.class, Currency.class}, version = 4)
 public abstract class AppDB extends RoomDatabase {
     private static Context appContext;
     private static AppDB instance;
@@ -58,6 +59,7 @@ public abstract class AppDB extends RoomDatabase {
                                     AppDB.class, "MyBalanceDb")
                             .addMigrations(MIGRATION_1_2)
                             .addMigrations(MIGRATION_2_3)
+                            .addMigrations(MIGRATION_3_4)
                             .addCallback(new Callback())
                             .build();
                 }
@@ -78,16 +80,17 @@ public abstract class AppDB extends RoomDatabase {
                 AppDB database = instance;
                 AccountsDao accountsDao = database.accountsDao();
 
-
                 Accounts account = new Accounts();
                 account.setName(appContext.getString(R.string.cash));
-                account.setDescription("Иеющиейся наличные деньги");
+                account.setDescription("Cash money");
                 account.setAmount(0);
                 account.setLastExpensesDate("");
                 account.setLastIncomeDate("");
                 account.setLastExpensesAmount(0);
                 account.setLastIncomeAmount(0);
                 account.setCurrencyId(118);
+                account.setCurrencySymbol("$");
+                account.setCurrencyCharCode("USD");
                 accountsDao.insert(account);
 
                 for (String s : DbTableSQL.table_currency_date) {
@@ -108,12 +111,32 @@ public abstract class AppDB extends RoomDatabase {
             }
         }
     };
-    static final Migration MIGRATION_2_3 = new Migration(2,3) {
+    static final Migration MIGRATION_2_3 = new Migration(2, 3) {
         @Override
         public void migrate(@NonNull SupportSQLiteDatabase supportSQLiteDatabase) {
-            for(String s : DbTableSQL.migration_2_3_DBUpdate){
+            for (String s : DbTableSQL.migration_2_3_DBUpdate) {
                 supportSQLiteDatabase.execSQL(s);
             }
+        }
+    };
+
+    static final Migration MIGRATION_3_4 = new Migration(3, 4) {
+        @Override
+        public void migrate(@NonNull SupportSQLiteDatabase supportSQLiteDatabase) {
+            for (String s : DbTableSQL.migration_3_4_DBUpdate) {
+                supportSQLiteDatabase.execSQL(s);
+            }
+            Executors.newSingleThreadExecutor().execute(() -> {
+                AccountsDao accountsDao = instance.accountsDao();
+                CurrencyDao currencyDao = instance.currencyDao();
+                List<Accounts> accountslist = accountsDao.getAllAccounts();
+                for (Accounts account : accountslist) {
+                    Currency currency = currencyDao.getById(account.getCurrencyId());
+                    account.setCurrencyCharCode(currency.getChar_code());
+                    account.setCurrencySymbol(currency.getSymbol());
+                    accountsDao.update(account);
+                }
+            });
         }
     };
 }

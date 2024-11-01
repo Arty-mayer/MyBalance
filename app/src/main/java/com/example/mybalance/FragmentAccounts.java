@@ -1,8 +1,9 @@
 package com.example.mybalance;
 
-
+// TODO в всязи с появлением новых полей для символа и обозначения валюты необходимо изменить генерацию recyclerView
 import android.content.Context;
-import android.content.Intent;
+import android.media.AudioAttributes;
+import android.media.SoundPool;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -31,7 +32,6 @@ import java.util.List;
 import java.util.concurrent.Executors;
 
 import com.example.mybalance.Utils.AppSettings;
-import com.example.mybalance.accounts.AccountEditor;
 import com.example.mybalance.accounts.AdapterForAccounts;
 
 import com.example.mybalance.data.AppDB;
@@ -54,10 +54,12 @@ public class FragmentAccounts extends Fragment {
     private List<Currency> currencies = new ArrayList<>();
     AccountsDao daoAccounts;
     CurrencyDao daoCurrency;
+    SoundPool soundPool;
+    int soundClickId;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_accounts, container, false);
+        return inflater.inflate(R.layout.accounts_fragment, container, false);
     }
 
     @Override
@@ -72,7 +74,7 @@ public class FragmentAccounts extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         findInterfaceItems(view);
-
+        createSoundPool(view);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(layoutManager);
 
@@ -81,6 +83,21 @@ public class FragmentAccounts extends Fragment {
         addButtonClickHandler();
         addPlusButtonHandler();
         loadFromDb();
+    }
+
+    private void createSoundPool(View view){
+        AudioAttributes audioAttributes = new AudioAttributes.Builder()
+                .setUsage(AudioAttributes.USAGE_MEDIA)
+                .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+                .build();
+
+        soundPool = new SoundPool.Builder()
+                .setMaxStreams(1)
+                .setAudioAttributes(audioAttributes)
+                .build();
+
+        soundClickId = soundPool.load(getActivity(), R.raw.click, 1);
+        int a = 34;
     }
 
     private void loadFromDb() {
@@ -170,13 +187,14 @@ public class FragmentAccounts extends Fragment {
                         getActivity().runOnUiThread(() -> {
                             InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
                             imm.hideSoftInputFromWindow(newAccounsEditText.getWindowToken(), 0);
-                            Toast.makeText(getContext(), "sdd", Toast.LENGTH_SHORT).show();
                         });
                         return;
                     }
                     account.setAmount(0);
                     account.setName(newName);
                     account.setCurrencyId(currency.getId());
+                    account.setCurrencyCharCode(currency.getChar_code());
+                    account.setCurrencySymbol(currency.getSymbol());
                     daoAccounts.insert(account);
                     requireActivity().runOnUiThread(() -> {
                         newAccounsEditText.setText("");
@@ -201,9 +219,12 @@ public class FragmentAccounts extends Fragment {
         } else {
             plusButton.setText("-");
         }
+        plusButton.setSoundEffectsEnabled(false);
+
         plusButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                soundPool.play(soundClickId,1f,1f,1, 0,1f);
                 if (inputCurrencyCharCode.getVisibility() == View.GONE) {
                     newAccounsEditText.setVisibility(View.VISIBLE);
                     addButton.setVisibility(View.VISIBLE);

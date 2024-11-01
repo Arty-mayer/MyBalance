@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/topAccounts"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="@string/expenses"
+        android:textIsSelectable="false"
+
+        android:textSize="34sp"
+        android:textStyle="bold|italic"
+        app:layout_constraintBottom_toBottomOf="@+id/plusButton"
+        app:layout_constraintEnd_toStartOf="@+id/plusButton"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
+    <View
+        android:id="@+id/divider"
+        android:layout_width="0dp"
+        android:layout_height="1dp"
+        android:layout_marginTop="8dp"
+        android:background="@android:color/darker_gray"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/editTextAmount" />
+
+    <TextView
+        android:id="@+id/textViewMinus"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:text="-"
+        android:textSize="28sp"
+        app:layout_constraintBottom_toBottomOf="@+id/date1"
+        app:layout_constraintStart_toEndOf="@+id/date1"
+        app:layout_constraintTop_toTopOf="@+id/date1" />
+
+    <Button
+        android:id="@+id/date2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:padding="8dp"
+        android:text="12.12.2024"
+        app:cornerRadius="2dp"
+        app:layout_constraintBottom_toBottomOf="@+id/date1"
+        app:layout_constraintStart_toEndOf="@+id/textViewMinus"
+        app:layout_constraintTop_toTopOf="@+id/date1" />
+
+    <Button
+        android:id="@+id/date1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:padding="8dp"
+        android:text="12.12.2024"
+        app:cornerRadius="2dp"
+        app:layout_constraintStart_toEndOf="@+id/incomeNotice2"
+        app:layout_constraintTop_toBottomOf="@+id/mySpinner" />
+
+
+    <Button
+        android:id="@+id/plusButton"
+        android:layout_width="50dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+
+        android:padding="1dp"
+        android:text="+"
+        app:cornerRadius="2dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerViewIncome"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+
+        android:layout_marginTop="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/divider"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <EditText
+        android:id="@+id/editTextAmount"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+
+
+        android:background="@drawable/edittext"
+        android:elevation="4dp"
+        android:ems="10"
+        android:hint="@string/amount"
+        android:inputType="number|numberDecimal"
+        android:padding="12dp"
+        android:textSize="16sp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@+id/date"
+        app:layout_constraintEnd_toStartOf="@+id/addButton"
+        app:layout_constraintStart_toEndOf="@+id/date"
+        app:layout_constraintTop_toTopOf="@+id/date" />
+
+    <Spinner
+        android:id="@+id/mySpinner"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="16dp"
+        android:visibility="visible"
+        app:layout_constraintStart_toEndOf="@+id/incomeNotice1"
+        app:layout_constraintTop_toBottomOf="@+id/topAccounts" />
+
+    <Button
+        android:id="@+id/date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:padding="8dp"
+        android:text=""
+        android:visibility="gone"
+        app:cornerRadius="2dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/date1" />
+
+    <Button
+        android:id="@+id/addButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:enabled="false"
+        android:text="@string/add"
+        android:visibility="gone"
+        app:cornerRadius="2dp"
+        app:layout_constraintBottom_toBottomOf="@+id/editTextAmount"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/editTextAmount" />
+
+    <TextView
+        android:id="@+id/incomeNotice1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:text="@string/account"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="@+id/mySpinner"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/mySpinner" />
+
+    <TextView
+        android:id="@+id/incomeNotice2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:lines="2"
+        android:text="Filter(max\n 3 month):"
+        android:gravity="end"
+
+
+        app:layout_constraintBottom_toBottomOf="@+id/date1"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/date1" />
+
+    <Switch
+        android:id="@+id/swAllAccounts"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:text="@string/all_accounts"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@+id/mySpinner"
+        app:layout_constraintStart_toEndOf="@+id/mySpinner"
+        app:layout_constraintTop_toTopOf="@+id/mySpinner" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

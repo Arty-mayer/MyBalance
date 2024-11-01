@@ -16,7 +16,7 @@
     <string name="currency_name">Название</string>
     <string name="notice1">Выберите символ или название валюты:</string>
     <string name="notice_or">или</string>
-    <string name="amount">"amount: "</string>
+    <string name="amount">Сумма</string>
     <string name="edit">Изменить</string>
     <string name="back">Назад</string>
     <string name="editor_notice_2">Описание (опционально):</string>
@@ -25,7 +25,10 @@
     <string name="editor_save_button">Сохранить</string>
     <string name="delete">Удалить</string>
     <string name="confirmation">Confirmation</string>
-    <string name="delete1">Delete?</string>
-    <string name="yes">Yes</string>
-    <string name="no">No</string>
+    <string name="delete1">Удалить?</string>
+    <string name="yes">Да</string>
+    <string name="no">Нет</string>
+    <string name="account">Счёт:</string>
+    <string name="balance">Баланс</string>
+    <string name="all_accounts">All accts</string>
 </resources>

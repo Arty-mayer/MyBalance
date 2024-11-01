@@ -6,15 +6,21 @@ import androidx.lifecycle.ViewModel;
 
 import com.example.mybalance.modelsDB.Accounts;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class AccountsViewModel extends ViewModel {
+
 private final MutableLiveData <List<Accounts>> accountsList = new MutableLiveData<>();
 
 public void addAccount (Accounts account){
     List<Accounts> list = accountsList.getValue();
-    list.add(account);
-    accountsList.postValue(list);
+    if (list == null){
+        list = new ArrayList<>();
+    }
+    List<Accounts> newList = new ArrayList<>(list);
+    newList.add(account);
+    accountsList.postValue(newList);
 }
     public LiveData<List<Accounts>> getAccountsList() {
         return accountsList;

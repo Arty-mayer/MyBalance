@@ -176,7 +176,7 @@ public class DbTableSQL {
             "INSERT INTO currency VALUES (165,986,'BRL','','Brazilian Real','Brasilianischer Real','Бразильский реал');",
             "INSERT INTO currency VALUES (166,990,'CLF','','Unidad de Fomento','Entwicklungswert','Единица развития');",
             "INSERT INTO currency VALUES (167,994,'XSU','','Sucre','Sucre','Сукре');"
-            };
+    };
 
     public static String[] migration_2_3_DBUpdate = {
             "ALTER TABLE Accounts ADD COLUMN currencyId INTEGER",
@@ -195,5 +195,9 @@ public class DbTableSQL {
                     + "SELECT id, name, description, amount, lastIncomeDate, lastIncomeAmount, lastExpensesDate, lastExpensesAmount, currencyId FROM Accounts",
             "DROP TABLE Accounts",
             "ALTER TABLE Accounts_temp RENAME TO Accounts"
+    };
+    public static String[] migration_3_4_DBUpdate = {
+            "ALTER TABLE Accounts ADD COLUMN currencyCharCode TEXT",
+            "ALTER TABLE Accounts ADD COLUMN currencySymbol TEXT"
     };
 }

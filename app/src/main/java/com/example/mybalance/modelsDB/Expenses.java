@@ -7,15 +7,14 @@ import androidx.room.PrimaryKey;
 public class Expenses {
     @PrimaryKey(autoGenerate = true)
     public long id;
-
     public String name;
     public String description;
     public String date;
     public float amount;
     public String photo_file_name;
+    public  int accountsId;
 
-    public Expenses() {
-    }
+
 
     public Expenses(String name, String description, String date, float amount, String photo_file_name) {
         this.name = name;
@@ -23,6 +22,17 @@ public class Expenses {
         this.date = date;
         this.amount = amount;
         this.photo_file_name = photo_file_name;
+    }
+
+    public int getAccountsId() {
+        return accountsId;
+    }
+
+    public void setAccountsId(int accountsId) {
+        this.accountsId = accountsId;
+    }
+
+    public Expenses() {
     }
 
     public long getId() {

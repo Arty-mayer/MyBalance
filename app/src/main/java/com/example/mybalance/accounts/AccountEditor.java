@@ -1,6 +1,7 @@
 package com.example.mybalance.accounts;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -10,6 +11,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -20,7 +22,12 @@ import com.example.mybalance.modelsDB.Accounts;
 import com.example.mybalance.modelsDB.AccountsDao;
 import com.example.mybalance.modelsDB.Currency;
 import com.example.mybalance.modelsDB.CurrencyDao;
+import com.example.mybalance.modelsDB.Expenses;
+import com.example.mybalance.modelsDB.ExpensesDao;
+import com.example.mybalance.modelsDB.Income;
+import com.example.mybalance.modelsDB.IncomeDao;
 
+import java.util.List;
 import java.util.concurrent.Executors;
 
 public class AccountEditor extends AppCompatActivity {
@@ -37,7 +44,10 @@ public class AccountEditor extends AppCompatActivity {
     int id;
     AccountsDao accountsDao;
     CurrencyDao currencyDao;
+    IncomeDao incomeDao;
+    ExpensesDao expensesDao;
     SharedPreferences appPreferences;
+    List<Accounts> accountsList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,11 +78,15 @@ public class AccountEditor extends AppCompatActivity {
             AppDB db = AppDB.getDb(this);
             accountsDao = db.accountsDao();
             currencyDao = db.currencyDao();
+            incomeDao = db.incomeDao();
+            expensesDao = db.expensesDao();
+
         }
         if (id > 0) {
             Executors.newSingleThreadExecutor().execute(new Runnable() {
                 @Override
                 public void run() {
+                    accountsList = accountsDao.getAllAccounts();
                     account = accountsDao.getAccount(id);
                     if (account == null) {
                         return;
@@ -105,14 +119,29 @@ public class AccountEditor extends AppCompatActivity {
         topic.setText(account.getName() + " (" + currency.getChar_code() + ")");
         name.setText(account.getName());
         description.setText(account.getDescription());
-        int defaultAccount = appPreferences.getInt("def_acc", 0);
+        int defaultAccount = appPreferences.getInt(Constante.defAccIdName, Constante.defAccIdValue);
         defaultCheckBox.setChecked(defaultAccount == account.getId());
     }
 
     private void setListeners() {
-        backButton.setOnClickListener(v -> finish());
-        deletebutton.setOnClickListener(v -> deleteAccountDialog());
-        saveButton.setOnClickListener(v -> updateAccount());
+        backButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View vm) {
+                finish();
+            }
+        });
+        deletebutton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View vm) {
+                deleteAccountDialog();
+            }
+        });
+        saveButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View vm) {
+                updateAccount();
+            }
+        });
     }
 
     private void updateAccount() {
@@ -120,37 +149,71 @@ public class AccountEditor extends AppCompatActivity {
         description.clearFocus();
         account.setName(name.getText().toString());
         account.setDescription(description.getText().toString());
-        if (defaultCheckBox.isChecked()){
-            appPreferences.edit().putInt("def_acc", account.getId()).apply();
+        if (defaultCheckBox.isChecked()) {
+            appPreferences.edit().putInt(Constante.defAccIdName, account.getId()).apply();
         }
         Executors.newSingleThreadExecutor().execute(() -> {
-            accountsDao.updeate(account);
+            accountsDao.update(account);
             runOnUiThread(() -> loadDatesFromDb());
         });
     }
 
     private void deleteAccountDialog() {
-        new AlertDialog.Builder(this).setTitle(R.string.confirmation)
-                .setMessage(R.string.delete1)
-                .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+
+        if (accountsList.size() < 2) {
+            Toast.makeText(this, "Должен остаться хотя бы один счёт", Toast.LENGTH_LONG).show();
+            return;
+        }
+        if (account.getAmount() != 0) {
+            Toast.makeText(this, "Счёт должен иметь нулевой баланс", Toast.LENGTH_LONG).show();
+            return;
+        }
+        new AlertDialog.
+                Builder(this).
+                setTitle(R.string.confirmation).
+                setMessage(R.string.delete1).
+                setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         deleteAccount();
                     }
-                })
-                .setNeutralButton(R.string.no, new DialogInterface.OnClickListener() {
+                }).
+                setNeutralButton(R.string.no, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.dismiss();
                     }
-                })
-                .show();
+                }).
+                show();
     }
 
     private void deleteAccount() {
         Executors.newSingleThreadExecutor().execute(() -> {
+            if (account.getId() == appPreferences.getInt(Constante.defAccIdName, Constante.defAccIdValue)) {
+                for (Accounts a : accountsList) {
+                    if (a.getId() != account.getId()) {
+                        appPreferences.edit().putInt(Constante.defAccIdName, a.getId()).apply();
+                        break;
+                    }
+                }
+            }
+            List<Income> listIncome = incomeDao.getIncomesByAccountsId(account.getId());
+            for (Income l: listIncome){
+                incomeDao.delete(l);
+            }
+
+            List<Expenses> listExpenses = expensesDao.getExpensesByAccountsId(account.getId());
+            for (Expenses e: listExpenses){
+                expensesDao.delete(e);
+            }
+
             accountsDao.delete(account);
-            runOnUiThread(() -> finish());
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    finish();
+                }
+            });
         });
     }
 }

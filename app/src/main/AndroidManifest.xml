@@ -26,9 +26,12 @@
             </intent-filter>
         </activity>
         <activity android:name="com.example.mybalance.accounts.AccountEditor" />
+        <activity android:name="com.example.mybalance.income.IncomeEditor" />
+        <activity android:name="com.example.mybalance.expenses.ExpensesEditor" />
 
     </application>
 
 </manifest>
 
     <!-- android:fullBackupContent="@xml/backup_rules" -->
+    <!-- android:enableOnBackInvokedCallback="true" -->

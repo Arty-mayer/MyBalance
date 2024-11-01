@@ -21,4 +21,13 @@ public interface IncomeDao {
 
     @Query("SELECT * FROM Income")
     List<Income> getAllIncome();
+
+    @Query("SELECT * FROM Income WHERE accountsId = :id")
+    List<Income> getIncomesByAccountsId(int id);
+
+    @Query("SELECT * FROM Income WHERE date BETWEEN :date1 AND :date2")
+    List<Income> getIncomesRange(String date1, String date2);
+
+    @Query("SELECT * FROM Income WHERE accountsId = :id AND date BETWEEN :date1 AND :date2")
+    List<Income> getIncomesRangeByAccount(String date1, String date2, int id);
 }

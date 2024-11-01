@@ -33,10 +33,9 @@ public class AdapterForAccounts extends RecyclerView.Adapter<AdapterForAccounts.
     @NonNull
     @Override
     public AccountViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        int layoutIdListForItem = R.layout.item_account;
         context = parent.getContext();
         LayoutInflater inflater = LayoutInflater.from(context);
-        View view = inflater.inflate(layoutIdListForItem, parent, false);
+        View view = inflater.inflate(R.layout.account_item, parent, false);
         AccountViewHolder viewHolder = new AccountViewHolder(view);
         return viewHolder;
     }
@@ -53,9 +52,12 @@ public class AdapterForAccounts extends RecyclerView.Adapter<AdapterForAccounts.
                 }
             }
         }
-        String str = context.getString(R.string.amount);
+        String str = context.getString(R.string.balance)+": ";
         if (currency != null && currency.getSymbol().length() > 0) {
-            str = str + currency.getSymbol();
+            str = str + currency.getSymbol()+" ";
+        }
+        else {
+            str += currency.getChar_code() + " ";
         }
         str = str + String.valueOf(account.getAmount());
         holder.name.setText(account.getName() + " (" + currency.getChar_code() + ")");
@@ -97,8 +99,8 @@ public class AdapterForAccounts extends RecyclerView.Adapter<AdapterForAccounts.
         public AccountViewHolder(@NonNull View itemView) {
             super(itemView);
             amount = itemView.findViewById(R.id.tvAmount);
-            name = itemView.findViewById(R.id.tvName);
-            editButton = itemView.findViewById(R.id.EditButton);
+            name = itemView.findViewById(R.id.tvDate);
+            editButton = itemView.findViewById(R.id.editButton);
         }
 
         public void setListeners(int position, Context context) {

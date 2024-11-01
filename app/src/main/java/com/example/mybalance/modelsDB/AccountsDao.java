@@ -17,7 +17,7 @@ public interface AccountsDao {
     void delete(Accounts account);
 
     @Update
-    void updeate(Accounts account);
+    void update(Accounts account);
 
     @Query("SELECT * FROM Accounts")
     List<Accounts> getAllAccounts();
