@@ -28,6 +28,7 @@ import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.mybalance.Utils.AccountsDatesFotIncAdapter;
 import com.example.mybalance.Utils.Constante;
 import com.example.mybalance.Utils.PickerCustom;
 import com.example.mybalance.data.AppDB;
@@ -37,6 +38,7 @@ import com.example.mybalance.modelsDB.Accounts;
 import com.example.mybalance.modelsDB.AccountsDao;
 import com.example.mybalance.modelsDB.Expenses;
 import com.example.mybalance.modelsDB.ExpensesDao;
+
 
 
 import java.time.LocalDate;
@@ -96,7 +98,7 @@ public class FragmentExpenses extends Fragment {
         setListeners();
         setObservers();
         getAccountsFromDb();
-        getExpensesFromDb();
+
 
     }
 
@@ -118,13 +120,14 @@ public class FragmentExpenses extends Fragment {
                 adapterForSpinner.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                 spinnerAccounts.setAdapter(adapterForSpinner);
                 spinnerAccounts.setSelection(selectedPosition);
+
+                getExpensesFromDb();
             }
         });
         expensesViewModel.getListExpenses().observe(getViewLifecycleOwner(), new Observer<List<Expenses>>() {
             @Override
             public void onChanged(List<Expenses> expenses) {
-
-                adapterForExpenses.setAccount(account);
+                adapterForExpenses.setAccountsList(makeListAccDatesForExpAdapter(expenses));
                 adapterForExpenses.updateList(expenses);
                 int position = adapterForExpenses.getItemCount() - 1;
                 if (position > 0) {
@@ -132,6 +135,19 @@ public class FragmentExpenses extends Fragment {
                 }
             }
         });
+    }
+
+    private List<AccountsDatesFotIncAdapter> makeListAccDatesForExpAdapter(List<Expenses> expenses){
+        List<AccountsDatesFotIncAdapter> accountsDate = new ArrayList<AccountsDatesFotIncAdapter>();
+        for (Expenses expense: expenses) {
+            for (Accounts a: expensesViewModel.getListAccounts().getValue()){
+                if (a.getId() == expense.getAccountsId()){
+                    accountsDate.add(new AccountsDatesFotIncAdapter(a.getName(), a.getCurrencySymbol(),a.getCurrencyCharCode()));
+                    break;
+                }
+            }
+        }
+        return accountsDate;
     }
 
     private void getAccountsFromDb() {
@@ -142,7 +158,12 @@ public class FragmentExpenses extends Fragment {
         if (expensesDao == null) {
             expensesDao = db.expensesDao();
         }
-        Executors.newSingleThreadExecutor().execute(() -> expensesViewModel.setListAccounts(accountsDao.getAllAccounts()));
+        Executors.newSingleThreadExecutor().execute(new Runnable() {
+            @Override
+            public void run() {
+                expensesViewModel.setListAccounts(accountsDao.getAllAccounts());
+            }
+        });
     }
 
     private void getExpensesFromDb() {
@@ -156,13 +177,13 @@ public class FragmentExpenses extends Fragment {
         }
         Executors.newSingleThreadExecutor().execute(() -> {
 
-            if (swAllAccts.isChecked() || accountId < 1) {
-                account = expensesViewModel.getListAccounts().getValue().get(0);
+            if (swAllAccts.isChecked()) {
+                adapterForExpenses.setPrintAccount(true);
                 expensesViewModel.setListExpenses(expensesDao.getExpensesRange(date1.toString(), date2.toString()));
-            } else {
+            } else if (accountId > 0) {
+                adapterForExpenses.setPrintAccount(false);
                 account = accountsDao.getAccount(accountId);
-                expensesViewModel.setListExpenses(expensesDao.getExpensesRangeByAccount(date1.toString(),
-                        date2.toString(), accountId));
+                expensesViewModel.setListExpenses(expensesDao.getExpensesRangeByAccount(date1.toString(), date2.toString(), accountId));
             }
         });
     }
@@ -354,7 +375,7 @@ public class FragmentExpenses extends Fragment {
             buttonDate1.setVisibility(View.VISIBLE);
             buttonDate2.setVisibility(View.VISIBLE);
             //  buttonApply.setVisibility(View.VISIBLE);
-            //  swAllAccts.setVisibility(View.VISIBLE);
+              swAllAccts.setVisibility(View.VISIBLE);
 
         } else {
             notice2.setVisibility(View.GONE);
@@ -362,7 +383,7 @@ public class FragmentExpenses extends Fragment {
             buttonDate1.setVisibility(View.GONE);
             buttonDate2.setVisibility(View.GONE);
             // buttonApply.setVisibility(View.GONE);
-            // swAllAccts.setVisibility(View.GONE);
+             swAllAccts.setVisibility(View.GONE);
         }
     }
 

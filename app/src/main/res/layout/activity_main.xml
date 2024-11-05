@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
 
     <!-- Ваш основной контент -->
     <FrameLayout
@@ -24,20 +24,34 @@
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottom_navigation"
         android:layout_width="match_parent"
-        android:layout_height="60dp"
+        android:layout_height="50dp"
         android:layout_alignParentBottom="true"
-        android:textAlignment="inherit"
-        android:padding="1pt"
-        app:cornerRadius="2dp"
-        app:elevation="3dp"
+        android:itemPadding="0dp"
 
-        app:itemBackground="@android:color/transparent"
+        android:padding="0pt"
+        app:backgroundTint="?attr/colorSurfaceInverse"
+        app:itemActiveIndicatorStyle="@null"
+
+        app:itemBackground="@drawable/item_navigation_bottom_menu"
+
         app:itemHorizontalTranslationEnabled="true"
-        app:itemIconTint="@color/bottom_navigation_selector"
-        app:itemRippleColor="@color/green1"
-        app:labelVisibilityMode="labeled"
+        app:itemIconSize="0dp"
 
+
+        app:itemTextColor="?attr/colorOnPrimary"
+        app:labelVisibilityMode="labeled"
         app:menu="@menu/navi_bar" />
 </RelativeLayout>
 
 
+<!---
+android:theme="@style/Widget.MaterialComponents.BottomNavigationView.Colored"
+      android:textAlignment="inherit"
+        android:visibility="visible"
+  app:cornerRadius="2dp"
+
+        app:elevation="3dp"
+        app:itemBackground="@android:color/transparent"
+        app:itemHorizontalTranslationEnabled="true"
+        app:itemIconTint="@color/bottom_navigation_selector"
+        app:itemRippleColor="@color/green1" -->

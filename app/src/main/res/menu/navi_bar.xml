@@ -4,28 +4,28 @@
     <item
         android:id="@+id/nav_income"
         android:title="@string/income"
-        android:icon="@android:color/transparent"
+        android:icon="@null"
         />
 
     <item
         android:id="@+id/nav_expenses"
         android:title="@string/expenses"
-        android:icon="@android:color/transparent"
+        android:icon="@null"
         />
     <item
         android:id="@+id/nav_home"
         android:title="@string/home"
-        android:icon="@android:color/transparent"
+        android:icon="@null"
         />
     <item
         android:id="@+id/nav_accounts"
         android:title="@string/accounts"
-        android:icon="@android:color/transparent"
+        android:icon="@null"
         />
     <item
-        android:id="@+id/nav_notifications"
-        android:title="@string/notifications"
-        android:icon="@android:color/transparent"
+        android:id="@+id/nav_others"
+        android:title="@string/others"
+        android:icon="@null"
         />
 
 

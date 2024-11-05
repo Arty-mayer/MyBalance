@@ -19,6 +19,7 @@ public class ExpensesViewHolder extends RecyclerView.ViewHolder {
     TextView date;
     TextView amount;
     TextView name;
+    TextView accountsName;
     Button buttonEdit;
 
     public ExpensesViewHolder(@NonNull View itemView) {
@@ -31,6 +32,7 @@ public class ExpensesViewHolder extends RecyclerView.ViewHolder {
         amount = view.findViewById(R.id.tvAmount);
         name = view.findViewById(R.id.vtName);
         buttonEdit = view.findViewById(R.id.editButton);
+        accountsName = view.findViewById(R.id.accountsName);
     }
 
     public void setListeners(Context context, List<Expenses> list, int position){

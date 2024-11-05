@@ -24,4 +24,11 @@ public interface AccountsDao {
 
     @Query("SELECT * FROM Accounts WHERE id = :id")
     Accounts getAccount(int id);
+
+    @Query("SELECT * FROM Accounts WHERE currencyId = :id")
+    List<Accounts> getAccountsByCurrencyId (int id);
+
+    @Query("SELECT * FROM Accounts WHERE currencyId != :id")
+    List<Accounts> getAccountsByCurrencyIdExclude (int id);
+
 }

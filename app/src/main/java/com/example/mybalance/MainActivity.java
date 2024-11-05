@@ -4,20 +4,18 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
-import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
 
 import com.example.mybalance.Utils.AppSettings;
-import com.example.mybalance.accounts.AccountEditor;
-import com.example.mybalance.modelsDB.Accounts;
+import com.example.mybalance.Utils.Constante;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
 
 
-import java.util.List;
 import java.util.concurrent.Executors;
 
 import com.example.mybalance.data.AppDB;
@@ -31,13 +29,15 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        setDefaultSettings();
         appSettings = new AppSettings(getApplicationContext());
 
         progBar = findViewById(R.id.progress_bar);
-
         bottomNavigationView = findViewById(R.id.bottom_navigation);
-        bottomNavigationView.setDefaultFocusHighlightEnabled(true);
+        bottomNavigationView.setDefaultFocusHighlightEnabled(false);
         bottomNavigationView.setSelectedItemId(R.id.nav_home);
+
+
         bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -53,6 +53,9 @@ public class MainActivity extends AppCompatActivity {
                 }
                 if (item.getItemId() == R.id.nav_expenses){
                     selectedFragment = new FragmentExpenses();
+                }
+                if (item.getItemId() == R.id.nav_others){
+                    selectedFragment = new FragmentOthers();
                 }
 
                 if (selectedFragment != null) {
@@ -83,8 +86,6 @@ public class MainActivity extends AppCompatActivity {
                         .commit();
             });
         });
-
-
     }
 
     private void setUIEnabled(boolean enabled) {
@@ -94,6 +95,18 @@ public class MainActivity extends AppCompatActivity {
         } else {
             bottomNavigationView.setVisibility(View.GONE);
         }
+    }
+    private void setDefaultSettings (){
+        SharedPreferences preferences = this.getSharedPreferences(Constante.preferences, this.MODE_PRIVATE);
+        if (preferences.contains(Constante.defAccIdName)){
+            return;
+       }
+
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putInt(Constante.defAccIdName, Constante.defAccIdValue);
+        editor.putInt(Constante.defCurrencyId, Constante.defCurrecyIdValue);
+        editor.apply();
+
     }
 
 
