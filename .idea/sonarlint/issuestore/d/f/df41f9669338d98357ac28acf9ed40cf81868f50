@@ -1,30 +1,0 @@
-
-Œ	java:S117"QRename this local variable to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(ºõ¬ÃJ$de7560bb-e3ce-452d-802d-40fd875457ac
-Œ	java:S117"QRename this local variable to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(ºõ¬ÃJ$4162f7c0-f7bc-4b3e-8c0a-c2b3c505481b
-Œ	java:S117"QRename this local variable to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(ºõ¬ÃJ$2c95a54c-5498-4b10-a103-f2d6ca75b1fc
-Œ	java:S117/"QRename this local variable to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(‡Ç¿óJ$90576335-850b-4dad-aca0-04c49b132c91
-Œ	java:S117G"QRename this local variable to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(ïÒá÷J$f5a0dbd5-31c3-463e-b292-940bae1c6350
-‘	java:S117O"QRename this local variable to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(‡…şúÿÿÿÿJ$73a73e34-38f5-486d-9a3f-3f3c1c8c1f4b
-Œ
-java:S1104
-"PMake code a static final constant or non-public and provide accessors if needed.(½±Ï©J$7984c1ef-7a73-4dfe-918d-0d0dd7b60abc
-–
-java:S1104"UMake char_code a static final constant or non-public and provide accessors if needed.(¿µóäÿÿÿÿÿJ$008743fe-10d6-414a-b31a-2caa24df4355
-“
-java:S1104"RMake symbol a static final constant or non-public and provide accessors if needed.(˜Çœ¡ûÿÿÿÿJ$f690e03c-770b-4a49-8d28-48666d1e65d0
-Œ
-java:S1104"PMake name a static final constant or non-public and provide accessors if needed.( şÍ¾J$c49e605e-997e-4964-9176-3c8c23fa2bab
-
-java:S1104"SMake name_de a static final constant or non-public and provide accessors if needed.(ƒ†J$da176c5a-7fd1-4136-8430-c9f7d7135666
-”
-java:S1104"SMake name_ru a static final constant or non-public and provide accessors if needed.(®Ø¥ÿúÿÿÿÿJ$321a887c-17d4-4aef-827a-417ee0e29055
-š	java:S120"ZRename this package name to match the regular expression '^[a-z_]+(\.[a-z_][a-z0-9_]*)*$'.(¿ùÿóÿÿÿÿÿJ$ee5742f7-c404-4994-9e40-203a4152ae76
-”	java:S116"TRename this field "char_code" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(¿µóäÿÿÿÿÿJ$9b14796c-86a2-4df8-a8bf-2ad0064c879c
-	java:S116"RRename this field "name_de" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(ƒ†J$cc7f3022-3025-415c-8e0d-70c72ef04c7b
-’	java:S116"RRename this field "name_ru" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(®Ø¥ÿúÿÿÿÿJ$04b573d7-720b-4f4e-9218-64c035ce46d1
-	java:S100+"NRename this method name to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(€™Ê¬øÿÿÿÿJ$85fed66a-2120-4978-85f8-c78cf8817df9
-‰	java:S100/"NRename this method name to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(‡Ç¿óJ$27bd89ae-ac21-41a5-9cec-da8bfd03fbff
-ˆ	java:S100C"NRename this method name to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(š¢ú+J$7b21a485-8743-4239-a6f5-13a3fd04e47f
-‰	java:S100G"NRename this method name to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(ïÒá÷J$e67b4339-ca32-4d2d-bc8e-2ed92c205364
-	java:S100K"NRename this method name to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(¦ÌÇüÿÿÿÿJ$39537266-2742-4f51-98aa-44c676fc0bbe
-	java:S100O"NRename this method name to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(‡…şúÿÿÿÿJ$2a6b2829-173f-4d87-a9d3-748b48a79ba0

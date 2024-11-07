@@ -1,32 +1,0 @@
-
-©
-java:S1104"aMake table_currency_create a static final constant or non-public and provide accessors if needed.(®žª’ýÿÿÿÿ8†Ë»Šª2J$78856645-8d7f-400a-a2fc-fcf2fe8fe34c
-¢
-java:S1104"_Make table_currency_date a static final constant or non-public and provide accessors if needed.(¢™ßñ8†Ë»Šª2J$ea4bad3e-bc06-4999-b7d7-794194a071ab
-…
-java:S1104µ"bMake migration_2_3_DBUpdate a static final constant or non-public and provide accessors if needed.(ìÙùÁþÿÿÿÿ8ºÎÕŠª2
-ƒ
-java:S1444";Make this "public static table_currency_create" field final(®žª’ýÿÿÿÿ8†Ë»Šª2J$ea1a797d-6808-4092-ae2b-c1efa9b0450b
-|
-java:S1444"9Make this "public static table_currency_date" field final(¢™ßñ8†Ë»Šª2J$2866938f-94bf-411c-84a0-7878cd95a94a
-_
-java:S1444µ"<Make this "public static migration_2_3_DBUpdate" field final(ìÙùÁþÿÿÿÿ8»ÎÕŠª2
-¡	java:S120"ZRename this package name to match the regular expression '^[a-z_]+(\.[a-z_][a-z0-9_]*)*$'.(Ã¤žÒýÿÿÿÿ8ˆË»Šª2J$7aec04f6-3ecc-47d9-a456-f28b301251ce
-¨
-java:S3008"`Rename this field "table_currency_create" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(®žª’ýÿÿÿÿ8‰Ë»Šª2J$1754b3ab-5ded-4ab3-8776-774b1398612a
-¡
-java:S3008"^Rename this field "table_currency_date" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(¢™ßñ8‰Ë»Šª2J$7620d0a5-2e1c-42a6-a4a7-095b1ed19184
-„
-java:S3008µ"aRename this field "migration_2_3_DBUpdate" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(ìÙùÁþÿÿÿÿ8¾ÎÕŠª2
-e
-java:S2386"Make this member "protected".(®žª’ýÿÿÿÿ8‹Ë»Šª2J$b04f7ea0-de0d-4eb5-8d63-94bd6041b86a
-`
-java:S2386"Make this member "protected".(¢™ßñ8‹Ë»Šª2J$35d0095b-8229-417d-a5ef-b3c5d3cdaad5
-f
-java:S2386µ"Make this member "protected".(ìÙùÁþÿÿÿÿ8‹Ë»Šª2J$e1ea1ace-c0cb-457d-8e10-5f01a107136b
-|
-java:S1118":Add a private constructor to hide the implicit public one.(ªÞÔ]8ŒË»Šª2J$0bb0789f-1855-4f46-813b-fb3166d84df1
-s
-java:S1128"+Remove this unused import 'java.util.List'.(Õë±Äøÿÿÿÿ8ºŒ¼Šª2J$d3a2bc0b-abe0-4669-a3f3-788d8bf13937
-t
-java:S1128",Remove this unused import 'java.util.Stack'.(ÞÈ†üúÿÿÿÿ8ºŒ¼Šª2J$1625d290-aa31-4827-ab88-ecc5eab31b8d
