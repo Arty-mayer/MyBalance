@@ -40,7 +40,6 @@ import com.example.mybalance.modelsDB.Expenses;
 import com.example.mybalance.modelsDB.ExpensesDao;
 
 
-
 import java.time.LocalDate;
 import java.time.YearMonth;
 import java.util.ArrayList;
@@ -61,7 +60,7 @@ public class FragmentExpenses extends Fragment {
     TextView notice2;
     TextView minus;
     RecyclerView expensesView;
-    Switch swAllAccts;
+    Switch swAllAccounts;
 
     ExpensesViewModel expensesViewModel;
     ArrayAdapter<String> adapterForSpinner = null;
@@ -74,7 +73,7 @@ public class FragmentExpenses extends Fragment {
     // db
     ExpensesDao expensesDao = null;
     AccountsDao accountsDao = null;
-    List<Accounts> accountsList = null;
+
 
     LocalDate dateForNewInc;
     LocalDate date1;
@@ -82,7 +81,7 @@ public class FragmentExpenses extends Fragment {
     int accountId = 0;
     Accounts account;
 
-
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         return inflater.inflate(R.layout.expenses_fragment, container, false);
 
@@ -137,12 +136,12 @@ public class FragmentExpenses extends Fragment {
         });
     }
 
-    private List<AccountsDatesFotIncAdapter> makeListAccDatesForExpAdapter(List<Expenses> expenses){
-        List<AccountsDatesFotIncAdapter> accountsDate = new ArrayList<AccountsDatesFotIncAdapter>();
-        for (Expenses expense: expenses) {
-            for (Accounts a: expensesViewModel.getListAccounts().getValue()){
-                if (a.getId() == expense.getAccountsId()){
-                    accountsDate.add(new AccountsDatesFotIncAdapter(a.getName(), a.getCurrencySymbol(),a.getCurrencyCharCode()));
+    private List<AccountsDatesFotIncAdapter> makeListAccDatesForExpAdapter(List<Expenses> expenses) {
+        List<AccountsDatesFotIncAdapter> accountsDate = new ArrayList<>();
+        for (Expenses expense : expenses) {
+            for (Accounts a : expensesViewModel.getListAccounts().getValue()) {
+                if (a.getId() == expense.getAccountsId()) {
+                    accountsDate.add(new AccountsDatesFotIncAdapter(a.getName(), a.getCurrencySymbol(), a.getCurrencyCharCode()));
                     break;
                 }
             }
@@ -177,7 +176,7 @@ public class FragmentExpenses extends Fragment {
         }
         Executors.newSingleThreadExecutor().execute(() -> {
 
-            if (swAllAccts.isChecked()) {
+            if (swAllAccounts.isChecked()) {
                 adapterForExpenses.setPrintAccount(true);
                 expensesViewModel.setListExpenses(expensesDao.getExpensesRange(date1.toString(), date2.toString()));
             } else if (accountId > 0) {
@@ -190,7 +189,7 @@ public class FragmentExpenses extends Fragment {
 
     private void initialisation() {
         expensesViewModel = new ExpensesViewModel();
-        appPreferences = this.getActivity().getSharedPreferences(Constante.preferences, getActivity().MODE_PRIVATE);
+        appPreferences = this.getActivity().getSharedPreferences(Constante.preferences, Context.MODE_PRIVATE);
         calendar = Calendar.getInstance();
         dateForNewInc = LocalDate.of(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH) + 1, calendar.get(Calendar.DATE));
 
@@ -213,7 +212,6 @@ public class FragmentExpenses extends Fragment {
         buttonPlus = view.findViewById(R.id.plusButton);
         buttonDate1 = view.findViewById(R.id.date1);
         buttonDate2 = view.findViewById(R.id.date2);
-        // buttonApply = view.findViewById(R.id.buttonApply);
         buttonDate = view.findViewById(R.id.date);
         buttonAdd = view.findViewById(R.id.addButton);
         editTextAmount = view.findViewById(R.id.editTextAmount);
@@ -222,7 +220,7 @@ public class FragmentExpenses extends Fragment {
         notice2 = view.findViewById(R.id.incomeNotice2);
         minus = view.findViewById(R.id.textViewMinus);
         expensesView = view.findViewById(R.id.recyclerViewIncome);
-        swAllAccts = view.findViewById(R.id.swAllAccounts);
+        swAllAccounts = view.findViewById(R.id.swAllAccounts);
     }
 
     private void setButtonPlusSymbol() {
@@ -246,43 +244,40 @@ public class FragmentExpenses extends Fragment {
                 setButtonPlusSymbol();
             }
         });
-
+      final String NAME_1 = "Picker_expense_1";
         buttonDate.setOnClickListener(v -> {
             datePicker.button = (Button) v;
             datePicker.dateKey = 0;
-            datePicker.show(getActivity().getSupportFragmentManager(), "Picker_expense_1");
+            datePicker.show(getActivity().getSupportFragmentManager(), NAME_1);
         });
 
         buttonDate1.setOnClickListener(v -> {
             datePicker.button = (Button) v;
             datePicker.dateKey = 1;
-            datePicker.show(getActivity().getSupportFragmentManager(), "Picker_expense_1");
+            datePicker.show(getActivity().getSupportFragmentManager(), NAME_1);
         });
 
         buttonDate2.setOnClickListener(v -> {
             datePicker.button = (Button) v;
             datePicker.dateKey = 2;
-            datePicker.show(getActivity().getSupportFragmentManager(), "Picker_expense_1");
+            datePicker.show(getActivity().getSupportFragmentManager(), NAME_1);
         });
 
         editTextAmount.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
+                //the method is not used in the application, but it must be implemented because it is specified in the interface.
             }
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (s.length() > 0) {
-                    buttonAdd.setEnabled(true);
-                } else {
-                    buttonAdd.setEnabled(false);
-                }
+
+                buttonAdd.setEnabled(s.length() > 0);
             }
 
             @Override
             public void afterTextChanged(Editable s) {
-
+                //the method is not used in the application, but it must be implemented because it is specified in the interface.
             }
         });
 
@@ -317,7 +312,7 @@ public class FragmentExpenses extends Fragment {
             }
         });
 
-        swAllAccts.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        swAllAccounts.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 spinnerAccounts.setEnabled(!isChecked);
@@ -335,7 +330,7 @@ public class FragmentExpenses extends Fragment {
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
-
+                //the method is not used in the application, but it must be implemented because it is specified in the interface.
             }
         });
 
@@ -374,22 +369,19 @@ public class FragmentExpenses extends Fragment {
             minus.setVisibility(View.VISIBLE);
             buttonDate1.setVisibility(View.VISIBLE);
             buttonDate2.setVisibility(View.VISIBLE);
-            //  buttonApply.setVisibility(View.VISIBLE);
-              swAllAccts.setVisibility(View.VISIBLE);
+            swAllAccounts.setVisibility(View.VISIBLE);
 
         } else {
             notice2.setVisibility(View.GONE);
             minus.setVisibility(View.GONE);
             buttonDate1.setVisibility(View.GONE);
             buttonDate2.setVisibility(View.GONE);
-            // buttonApply.setVisibility(View.GONE);
-             swAllAccts.setVisibility(View.GONE);
+            swAllAccounts.setVisibility(View.GONE);
         }
     }
 
     private void setAddFormVisibility(boolean visible) {
         if (visible) {
-            // notice1.setVisibility(View.VISIBLE);
             buttonDate.setVisibility(View.VISIBLE);
             buttonAdd.setVisibility(View.VISIBLE);
             editTextAmount.setVisibility(View.VISIBLE);
@@ -398,19 +390,19 @@ public class FragmentExpenses extends Fragment {
                 spinnerAccounts.setEnabled(true);
             }
         } else {
-            //  notice1.setVisibility(View.GONE);
+
             buttonDate.setVisibility(View.GONE);
             buttonAdd.setVisibility(View.GONE);
             editTextAmount.setVisibility(View.GONE);
-            if (swAllAccts.isChecked()) {
+            if (swAllAccounts.isChecked()) {
                 spinnerAccounts.setEnabled(false);
             }
         }
     }
 
-    private void checkRange(Boolean setDate1) {
+    private void checkRange(boolean setDate1) {
         LocalDate date = date1.plusMonths(Constante.maxFiltersDatesDifference);
-        if (date.compareTo(date2) < 0) {
+        if (date.isBefore(date2)) {
             if (setDate1) {
                 date1 = date2.minusMonths(Constante.maxFiltersDatesDifference);
                 buttonDate1.setText(String.valueOf(date1));
