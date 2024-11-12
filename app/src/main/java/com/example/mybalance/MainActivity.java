@@ -12,6 +12,11 @@ import android.widget.ProgressBar;
 
 import com.example.mybalance.Utils.AppSettings;
 import com.example.mybalance.Utils.Constante;
+import com.example.mybalance.accounts.FragmentAccounts;
+import com.example.mybalance.expenses.FragmentExpenses;
+import com.example.mybalance.home.FragmentHome;
+import com.example.mybalance.income.FragmentIncome;
+import com.example.mybalance.other.FragmentOthers;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
 

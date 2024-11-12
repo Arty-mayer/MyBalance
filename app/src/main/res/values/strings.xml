@@ -31,7 +31,7 @@
     <string name="account">Account:</string>
     <string name="balance">Balance</string>
     <string name="all_accounts">All accts</string>
-    <string name="others">Others\n anderes</string>
+    <string name="others">Others</string>
     <string name="january">January</string>
     <string name="february">February</string>
     <string name="march">March</string>
@@ -44,4 +44,5 @@
     <string name="october">October</string>
     <string name="november">November</string>
     <string name="december">December</string>
+    <string name="settings">Settings</string>
 </resources>

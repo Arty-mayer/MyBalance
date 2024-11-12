@@ -26,6 +26,8 @@
         android:layout_height="0dp"
 
         android:layout_marginTop="8dp"
+        android:layoutAnimation="@anim/layout_animation"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -52,7 +54,7 @@
         android:visibility="gone"
         app:layout_constraintEnd_toStartOf="@+id/addButton"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/autoCompleteTextView" />
+        app:layout_constraintTop_toBottomOf="@+id/symbol" />
 
     <Button
         android:id="@+id/addButton"
@@ -72,7 +74,7 @@
         app:layout_constraintTop_toBottomOf="@+id/autoCompleteTextView2" />
 
     <AutoCompleteTextView
-        android:id="@+id/autoCompleteTextView"
+        android:id="@+id/symbol"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
 
@@ -131,9 +133,9 @@
         android:layout_marginStart="8dp"
         android:text="@string/notice_or"
         android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="@+id/autoCompleteTextView"
-        app:layout_constraintStart_toEndOf="@+id/autoCompleteTextView"
-        app:layout_constraintTop_toTopOf="@+id/autoCompleteTextView" />
+        app:layout_constraintBottom_toBottomOf="@+id/symbol"
+        app:layout_constraintStart_toEndOf="@+id/symbol"
+        app:layout_constraintTop_toTopOf="@+id/symbol" />
 
     <Button
         android:id="@+id/plusButton"

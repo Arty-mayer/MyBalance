@@ -1,4 +1,4 @@
-package com.example.mybalance;
+package com.example.mybalance.home;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -22,17 +23,15 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.mybalance.R;
 import com.example.mybalance.Utils.Constante;
 import com.example.mybalance.data.AppDB;
-import com.example.mybalance.home.AccountForRView;
-import com.example.mybalance.home.AccountsAdapterForHomeRV;
 import com.example.mybalance.modelsDB.Accounts;
 import com.example.mybalance.modelsDB.AccountsDao;
 import com.example.mybalance.modelsDB.Expenses;
 import com.example.mybalance.modelsDB.ExpensesDao;
 import com.example.mybalance.modelsDB.Income;
 import com.example.mybalance.modelsDB.IncomeDao;
-//import com.example.mybalance.modelsDB.Month;
 
 import java.time.LocalDate;
 import java.time.Month;
@@ -43,7 +42,12 @@ import java.util.List;
 import java.util.concurrent.Executors;
 
 public class FragmentHome extends Fragment {
+    public static final int MAIN_CURRENCY_THIS_MONTH = 1;
+    public static final int MAIN_CURRENCY_MONTH = 2;
+    public static final int OTHER_CURRENCY_MONTH = 3;
+
     TextView notice1;
+    TextView notice2;
     TextView notice3;
     TextView thisMonthAmount;
     TextView lastMonthAmount;
@@ -55,6 +59,9 @@ public class FragmentHome extends Fragment {
     RecyclerView mainCurrencyMonthRV;
     RecyclerView otherCurrencyRV;
     TextView otherCurrencysNotice;
+    ProgressBar progressBar1;
+    ProgressBar progressBar2;
+    ProgressBar progressBar3;
 
     ArrayAdapter<String> arrayAdapter1;
     ArrayAdapter<String> arrayAdapter2;
@@ -104,7 +111,7 @@ public class FragmentHome extends Fragment {
         loadDatesFromDb();
     }
 
-    private void setListeners(){
+    private void setListeners() {
         spinner1.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -134,11 +141,13 @@ public class FragmentHome extends Fragment {
         });
     }
 
-    private void getMainCurrencyAccountsDatesFromDb(){
+    private void getMainCurrencyAccountsDatesFromDb() {
+        setInterfacePartVisibility(MAIN_CURRENCY_MONTH, View.INVISIBLE);
+        progressBar2.setVisibility(View.VISIBLE);
         Executors.newSingleThreadExecutor().execute(new Runnable() {
             @Override
             public void run() {
-                listMainMonth = makeListForRV(datePairForMain.first,datePairForMain.second,mainCurrencyAccounts);
+                listMainMonth = makeListForRV(datePairForMain.first, datePairForMain.second, mainCurrencyAccounts);
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -148,7 +157,11 @@ public class FragmentHome extends Fragment {
             }
         });
     }
-    private void getOtherCurrencyAccountsDatesFromDb(){
+
+    private void getOtherCurrencyAccountsDatesFromDb() {
+        setInterfacePartVisibility(OTHER_CURRENCY_MONTH, View.INVISIBLE);
+        // setInterfacePartVisibility(OTHER_CURRENCY_MONTH, View.VISIBLE);
+        progressBar3.setVisibility(View.VISIBLE);
         Executors.newSingleThreadExecutor().execute(new Runnable() {
             @Override
             public void run() {
@@ -213,7 +226,7 @@ public class FragmentHome extends Fragment {
     }
 
     private String getMonthFromResources(Month m) {
-        String month ="";
+        String month = "";
         switch (m) {
             case JANUARY:
                 month = getString(R.string.january);
@@ -252,12 +265,13 @@ public class FragmentHome extends Fragment {
                 month = getString(R.string.december);
                 break;
         }
-    return month;
+        return month;
     }
 
     private void findInterfaceItems(View view) {
-        notice1 = view.findViewById(R.id.noticeHome1);
-        notice3 = view.findViewById(R.id.homeNotice3);
+        notice1 = view.findViewById(R.id.notice1);
+        notice2 = view.findViewById(R.id.notice2);
+        notice3 = view.findViewById(R.id.notice3);
         spinner1 = view.findViewById(R.id.homeSpinner1);
         spinner2 = view.findViewById(R.id.homeSpinner2);
         thisMonthAmount = view.findViewById(R.id.TVThisMonth);
@@ -267,14 +281,40 @@ public class FragmentHome extends Fragment {
         mainCurrencyRV = view.findViewById(R.id.RVMainCurrencyAccounts);
         mainCurrencyMonthRV = view.findViewById(R.id.RVMainCurrencyAccountsMonth);
         otherCurrencyRV = view.findViewById(R.id.RVAnotherCurrencyAccounts);
-        otherCurrencysNotice = view.findViewById(R.id.homeNotice3);
+        otherCurrencysNotice = view.findViewById(R.id.notice3);
+        progressBar1 = view.findViewById(R.id.progressBar1);
+        progressBar2 = view.findViewById(R.id.progressBar2);
+        progressBar3 = view.findViewById(R.id.progressBar3);
 
     }
 
+    private void setInterfacePartVisibility(int part, int visibility) {
+        switch (part) {
+            case FragmentHome.MAIN_CURRENCY_THIS_MONTH:
+                notice2.setVisibility(visibility);
+                thisMonthImage.setVisibility(visibility);
+                thisMonthAmount.setVisibility(visibility);
+                mainCurrencyRV.setVisibility(visibility);
+                break;
+            case FragmentHome.MAIN_CURRENCY_MONTH:
+                spinner1.setVisibility(visibility);
+                lastMonthImage.setVisibility(visibility);
+                lastMonthAmount.setVisibility(visibility);
+                mainCurrencyMonthRV.setVisibility(visibility);
+                break;
+            case FragmentHome.OTHER_CURRENCY_MONTH:
+                notice3.setVisibility(visibility);
+                spinner2.setVisibility(visibility);
+                otherCurrencyRV.setVisibility(visibility);
+                break;
+        }
+    }
+
     private void loadDatesFromDb() {
+        setInterfacePartVisibility(MAIN_CURRENCY_THIS_MONTH, View.INVISIBLE);
+        progressBar1.setVisibility(View.VISIBLE);
         final int mainCurrencyId = appPreferences.getInt(Constante.defCurrencyId, 118);
         if (mainCurrencyId == 0) {
-
             return;
         }
         YearMonth yearMonth = YearMonth.of(today.getYear(), today.getMonth());
@@ -302,8 +342,8 @@ public class FragmentHome extends Fragment {
                     @Override
                     public void run() {
                         makeInterfaceMainThisMonth();
-                     //   makeInterfaceMainMonth();
-                    //    makeInterfaceOther();
+                        //   makeInterfaceMainMonth();
+                        //    makeInterfaceOther();
                     }
                 });
             }
@@ -366,6 +406,7 @@ public class FragmentHome extends Fragment {
     @SuppressLint("ResourceAsColor")
     private void makeInterfaceMainThisMonth() {
         if (listMainThisMonth == null || listMainThisMonth.isEmpty()) {
+            progressBar1.setVisibility(View.GONE);
             return;
         }
         float difThisMonth = 0;
@@ -389,12 +430,14 @@ public class FragmentHome extends Fragment {
         }
 
         adapterForRVHomeMainThisMonth.updateList(listMainThisMonth);
-
+        progressBar1.setVisibility(View.GONE);
+        setInterfacePartVisibility(MAIN_CURRENCY_THIS_MONTH, View.VISIBLE);
     }
 
     @SuppressLint("ResourceAsColor")
     private void makeInterfaceMainMonth() {
         if (listMainMonth == null || listMainMonth.isEmpty()) {
+            progressBar2.setVisibility(View.GONE);
             return;
         }
         float difThisMonth = 0;
@@ -416,20 +459,20 @@ public class FragmentHome extends Fragment {
             lastMonthAmount.setTextColor(Color.GREEN);
             lastMonthImage.setImageDrawable(drawableArrows.first);
         }
+        progressBar2.setVisibility(View.GONE);
+        setInterfacePartVisibility(MAIN_CURRENCY_MONTH, View.VISIBLE);
         adapterForRVHomeMainMonth.updateList(listMainMonth);
     }
 
     private void makeInterfaceOther() {
-        if (listOtherMonth == null || listOtherMonth.isEmpty()){
-            otherCurrencysNotice.setVisibility(View.GONE);
-            spinner2.setVisibility(View.GONE);
-            otherCurrencyRV.setVisibility(View.GONE);
+        progressBar3.setVisibility(View.GONE);
+        if (listOtherMonth == null || listOtherMonth.isEmpty()) {
+            setInterfacePartVisibility(OTHER_CURRENCY_MONTH, View.INVISIBLE);
             return;
-        }else{
-            otherCurrencysNotice.setVisibility(View.VISIBLE);
-            spinner2.setVisibility(View.VISIBLE);
-            otherCurrencyRV.setVisibility(View.VISIBLE);
+        } else {
+            setInterfacePartVisibility(OTHER_CURRENCY_MONTH, View.VISIBLE);
         }
+        setInterfacePartVisibility(OTHER_CURRENCY_MONTH, View.VISIBLE);
         adapterForRVHomeOtherMonth.updateList(listOtherMonth);
     }
 

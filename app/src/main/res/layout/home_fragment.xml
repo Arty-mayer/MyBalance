@@ -32,19 +32,19 @@
 
 
             <TextView
-                android:id="@+id/noticeHome1"
+                android:id="@+id/notice1"
                 android:layout_width="wrap_content"
                 android:layout_height="22dp"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
-                android:text="Счета основной валюты"
+                android:text="Счета основной валюты:"
                 android:textSize="18sp"
                 android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
-                android:id="@+id/textView4"
+                android:id="@+id/notice2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
@@ -52,7 +52,7 @@
                 android:text="Текущий месяц:"
                 android:textSize="16sp"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/noticeHome1" />
+                app:layout_constraintTop_toBottomOf="@+id/notice1" />
 
             <ImageView
                 android:id="@+id/IVThisMonth"
@@ -60,7 +60,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="2dp"
                 app:layout_constraintEnd_toStartOf="@+id/TVThisMonth"
-                app:layout_constraintTop_toTopOf="@+id/textView4"
+                app:layout_constraintTop_toTopOf="@+id/notice2"
                 app:srcCompat="@drawable/arrow_up" />
 
 
@@ -69,9 +69,9 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="8dp"
-                android:text="TextView"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/textView4" />
+                app:layout_constraintTop_toTopOf="@+id/notice2" />
+
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/RVMainCurrencyAccounts"
@@ -80,21 +80,22 @@
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="8dp"
+                android:layoutAnimation="@anim/layout_animation"
+
+
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/TVThisMonth"
-                />
-
+                app:layout_constraintTop_toBottomOf="@+id/notice2" />
 
             <Spinner
                 android:id="@+id/homeSpinner1"
                 android:layout_width="wrap_content"
                 android:layout_height="48dp"
                 android:layout_marginStart="8dp"
-                android:layout_marginTop="20dp"
 
+                android:layout_marginTop="170dp"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/RVMainCurrencyAccounts" />
+                app:layout_constraintTop_toBottomOf="@+id/notice2" />
 
             <ImageView
                 android:id="@+id/IVLastMonth"
@@ -111,7 +112,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="8dp"
-                android:text="TextView"
                 app:layout_constraintBottom_toBottomOf="@+id/homeSpinner1"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/homeSpinner1" />
@@ -124,21 +124,23 @@
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="2dp"
                 android:layout_marginEnd="8dp"
+                android:layoutAnimation="@anim/layout_animation"
                 app:layout_constraintEnd_toEndOf="parent"
+
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/homeSpinner1" />
 
             <TextView
-                android:id="@+id/homeNotice3"
+                android:id="@+id/notice3"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
-                android:layout_marginTop="24dp"
-                android:text="Валютные счета"
+                android:layout_marginTop="170dp"
+                android:text="Валютные счета:"
                 android:textSize="16sp"
                 android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/RVMainCurrencyAccountsMonth" />
+                app:layout_constraintTop_toBottomOf="@+id/homeSpinner1" />
 
             <Spinner
                 android:id="@+id/homeSpinner2"
@@ -148,7 +150,7 @@
 
                 android:layout_marginTop="2dp"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/homeNotice3" />
+                app:layout_constraintTop_toBottomOf="@+id/notice3" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/RVAnotherCurrencyAccounts"
@@ -157,8 +159,44 @@
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="2dp"
                 android:layout_marginEnd="8dp"
+                android:layoutAnimation="@anim/layout_animation"
                 app:layout_constraintEnd_toEndOf="parent"
+
                 app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/homeSpinner2" />
+
+            <ProgressBar
+                android:id="@+id/progressBar1"
+                style="@android:style/Widget.ProgressBar.Large"
+                android:layout_width="100dp"
+                android:layout_height="140dp"
+                android:layout_marginTop="38dp"
+                android:visibility="visible"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/notice1" />
+
+            <ProgressBar
+                android:id="@+id/progressBar2"
+                style="@android:style/Widget.ProgressBar.Large"
+                android:layout_width="100dp"
+                android:layout_height="140dp"
+                android:layout_marginTop="2dp"
+                android:visibility="visible"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/homeSpinner1" />
+
+            <ProgressBar
+                android:id="@+id/progressBar3"
+                style="@android:style/Widget.ProgressBar.Large"
+                android:layout_width="100dp"
+                android:layout_height="140dp"
+                android:layout_marginTop="2dp"
+                android:visibility="visible"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.498"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/homeSpinner2" />
 

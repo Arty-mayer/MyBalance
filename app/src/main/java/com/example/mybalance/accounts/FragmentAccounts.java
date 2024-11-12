@@ -1,6 +1,5 @@
-package com.example.mybalance;
+package com.example.mybalance.accounts;
 
-// TODO в всязи с появлением новых полей для символа и обозначения валюты необходимо изменить генерацию recyclerView
 import android.content.Context;
 import android.media.AudioAttributes;
 import android.media.SoundPool;
@@ -18,13 +17,11 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
-import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -32,13 +29,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Executors;
 
+import com.example.mybalance.R;
 import com.example.mybalance.Utils.AppSettings;
-import com.example.mybalance.accounts.AdapterForAccounts;
 
 import com.example.mybalance.data.AppDB;
 import com.example.mybalance.modelsDB.Accounts;
 import com.example.mybalance.modelsDB.AccountsDao;
-import com.example.mybalance.accounts.AccountsViewModel;
 import com.example.mybalance.modelsDB.Currency;
 import com.example.mybalance.modelsDB.CurrencyDao;
 
@@ -75,8 +71,8 @@ public class FragmentAccounts extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         findInterfaceItems(view);
-        createSoundPool(view);
-        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL,false);
+        //  createSoundPool(view);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
         recyclerView.setLayoutManager(layoutManager);
 
         recycleViewUpdater();
@@ -85,7 +81,7 @@ public class FragmentAccounts extends Fragment {
         addPlusButtonHandler();
         loadFromDb();
     }
-
+/*
     private void createSoundPool(View view){
         AudioAttributes audioAttributes = new AudioAttributes.Builder()
                 .setUsage(AudioAttributes.USAGE_MEDIA)
@@ -98,8 +94,8 @@ public class FragmentAccounts extends Fragment {
                 .build();
 
         soundClickId = soundPool.load(getActivity(), R.raw.click, 1);
-        int a = 34;
-    }
+
+    }*/
 
     private void loadFromDb() {
         AppDB db = AppDB.getDb(getContext());
@@ -128,9 +124,9 @@ public class FragmentAccounts extends Fragment {
         addButton = view.findViewById(R.id.addButton);
         plusButton = view.findViewById(R.id.plusButton);
         recyclerView = view.findViewById(R.id.recyclerViewAccs);
-        inputCurrencyCharCode = view.findViewById(R.id.autoCompleteTextView);
+        inputCurrencyCharCode = view.findViewById(R.id.symbol);
         inputCurrencyName = view.findViewById(R.id.autoCompleteTextView2);
-        //notices.add(view.findViewById(R.id.notice_0));
+
         notices.add(view.findViewById(R.id.notice_1));
         notices.add(view.findViewById(R.id.notice_2));
 
@@ -145,6 +141,9 @@ public class FragmentAccounts extends Fragment {
             public void onChanged(List<Accounts> list) {
                 adapter.setCurrencies(currencies);
                 adapter.updateList(list);
+                if (recyclerView.getVisibility() == View.GONE) {
+                    recyclerView.setVisibility(View.VISIBLE);
+                }
                 recyclerView.smoothScrollToPosition(adapter.getItemCount() - 1);
             }
         });
@@ -159,11 +158,9 @@ public class FragmentAccounts extends Fragment {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (s.length() > 2) {
-                    addButton.setEnabled(true);
-                } else {
-                    addButton.setEnabled(false);
-                }
+
+                addButton.setEnabled(s.length() > 2);
+
             }
 
             @Override
@@ -204,7 +201,7 @@ public class FragmentAccounts extends Fragment {
                         inputCurrencyCharCode.clearFocus();
                         inputCurrencyName.setText("");
                         inputCurrencyName.clearFocus();
-                      //  viewModel.addAccount(account);
+
                         loadFromDb();
                         InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
                         imm.hideSoftInputFromWindow(newAccounsEditText.getWindowToken(), 0);
@@ -225,7 +222,7 @@ public class FragmentAccounts extends Fragment {
         plusButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                soundPool.play(soundClickId,1f,1f,1, 0,1f);
+                // soundPool.play(soundClickId,1f,1f,1, 0,1f);
                 if (inputCurrencyCharCode.getVisibility() == View.GONE) {
                     newAccounsEditText.setVisibility(View.VISIBLE);
                     addButton.setVisibility(View.VISIBLE);

@@ -80,5 +80,6 @@ public class AdapterForIncome extends RecyclerView.Adapter<IncomeViewHolder> {
     public void updateList(List<Income> list) {
         this.list = list;
         notifyDataSetChanged();
+
     }
 }
