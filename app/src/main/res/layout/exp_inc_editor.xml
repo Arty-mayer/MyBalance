@@ -55,7 +55,7 @@
         app:layout_constraintStart_toEndOf="@+id/date"
         app:layout_constraintTop_toTopOf="@+id/date" />
 
-    <com.example.mybalance.utils.EditDate
+    <com.mybalance.utils.EditDate
         android:id="@+id/date"
         android:layout_width="120dp"
         android:layout_height="wrap_content"
