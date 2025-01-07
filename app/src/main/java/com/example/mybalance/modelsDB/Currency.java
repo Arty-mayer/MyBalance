@@ -1,7 +1,10 @@
 package com.example.mybalance.modelsDB;
 
+import androidx.annotation.NonNull;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
+
+import com.example.mybalance.utils.AppSettings;
 
 @Entity
 public class Currency {
@@ -56,11 +59,28 @@ public class Currency {
         this.symbol = symbol;
     }
 
+    @NonNull
     public String getName() {
+        String string = "";
+        switch (AppSettings.appLang) {
+            case "ru":
+                string = getName_ru();
+                break;
+            case "de":
+                string = getName_de();
+                break;
+            default:
+                string = getName_en();
+                break;
+        }
+        return string;
+    }
+
+    public String getName_en() {
         return name;
     }
 
-    public void setName(String name) {
+    public void setName_en(String name) {
         this.name = name;
     }
 
@@ -78,5 +98,11 @@ public class Currency {
 
     public void setName_ru(String name_ru) {
         this.name_ru = name_ru;
+    }
+
+    @NonNull
+    @Override
+    public String toString() {
+        return char_code + "(" + getName() + ")";
     }
 }

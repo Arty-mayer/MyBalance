@@ -2,6 +2,12 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
+        android:id="@+id/nav_home"
+        android:title="@string/summary"
+        android:icon="@null"
+        />
+
+    <item
         android:id="@+id/nav_income"
         android:title="@string/income"
         android:icon="@null"
@@ -12,16 +18,7 @@
         android:title="@string/expenses"
         android:icon="@null"
         />
-    <item
-        android:id="@+id/nav_home"
-        android:title="@string/home"
-        android:icon="@null"
-        />
-    <item
-        android:id="@+id/nav_accounts"
-        android:title="@string/accounts"
-        android:icon="@null"
-        />
+
     <item
         android:id="@+id/nav_others"
         android:title="@string/others"
@@ -32,3 +29,10 @@
 </menu>
 
 <!--android:icon="@drawable/ic_home"-->
+<!--
+<item
+android:id="@+id/nav_reports"
+android:title="Einkaufs Zettel"
+android:icon="@null"
+    />
+-->

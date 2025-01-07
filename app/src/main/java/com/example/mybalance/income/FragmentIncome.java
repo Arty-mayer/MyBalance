@@ -1,6 +1,7 @@
 package com.example.mybalance.income;
 
 import android.content.Context;
+import androidx.appcompat.widget.SwitchCompat;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.Editable;
@@ -11,11 +12,11 @@ import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.Spinner;
-import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -27,20 +28,24 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.mybalance.R;
-import com.example.mybalance.Utils.AccountsDatesFotIncAdapter;
-import com.example.mybalance.Utils.Constante;
-import com.example.mybalance.Utils.PickerCustom;
+import com.example.mybalance.utils.AccountsDatesFotIncAdapter;
+import com.example.mybalance.utils.Constante;
+import com.example.mybalance.utils.PickerCustom;
 import com.example.mybalance.data.AppDB;
 import com.example.mybalance.modelsDB.Accounts;
 import com.example.mybalance.modelsDB.AccountsDao;
 import com.example.mybalance.modelsDB.Income;
 import com.example.mybalance.modelsDB.IncomeDao;
+import com.example.mybalance.modelsDB.IncomeType;
+import com.example.mybalance.modelsDB.IncomeTypeDao;
 
 import java.time.LocalDate;
 import java.time.YearMonth;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.Executors;
 
 public class FragmentIncome extends Fragment {
@@ -56,7 +61,8 @@ public class FragmentIncome extends Fragment {
     TextView notice2;
     TextView minus;
     RecyclerView incomesView;
-    Switch swAllAccounts;
+    SwitchCompat swAllAccounts;
+    AutoCompleteTextView incomeType;
 
     IncomeViewModel incomeViewModel;
     ArrayAdapter<String> adapterForSpinner = null;
@@ -69,14 +75,19 @@ public class FragmentIncome extends Fragment {
     // db
     IncomeDao incomeDao = null;
     AccountsDao accountsDao = null;
-    List<Accounts> accountsList = null;
+    IncomeTypeDao incomeTypeDao = null;
 
     LocalDate dateForNewInc;
     LocalDate date1;
     LocalDate date2;
     int accountId = 0;
     Accounts account;
+    List<IncomeType> incomeTypeList;
 
+    ArrayAdapter<String> adapterForIncomeTypes;
+    Map<Long, IncomeType> mapIncomeType;
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         return inflater.inflate(R.layout.income_fragment, container, false);
     }
@@ -88,9 +99,15 @@ public class FragmentIncome extends Fragment {
         findInterfaceItems(view);
         initialisation();
         setButtonPlusSymbol();
-        getAccountsFromDb();
         setListeners();
         setObservers();
+        getAccAndIncomeTypesFromDb();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        getAccAndIncomeTypesFromDb();
     }
 
     private void setObservers() {
@@ -111,6 +128,16 @@ public class FragmentIncome extends Fragment {
                 adapterForSpinner.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                 spinnerAccounts.setAdapter(adapterForSpinner);
                 spinnerAccounts.setSelection(selectedPosition);
+
+                List<String> itemsForTypes = new ArrayList<>();
+                for (IncomeType type : incomeTypeList) {
+                    itemsForTypes.add(type.getName());
+                    mapIncomeType.put(type.getId(), type);
+                }
+                adapterForIncomeTypes = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item, itemsForTypes);
+                adapterForIncomeTypes.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                incomeType.setAdapter(adapterForIncomeTypes);
+                adapterForIncome.setTypesMap(mapIncomeType);
             }
         });
         incomeViewModel.getListIncome().observe(getViewLifecycleOwner(), new Observer<List<Income>>() {
@@ -122,19 +149,23 @@ public class FragmentIncome extends Fragment {
                 if (position > 0) {
                     incomesView.smoothScrollToPosition(adapterForIncome.getItemCount() - 1);
                 }
-                if (incomesView.getVisibility() == View.GONE){
+                if (incomesView.getVisibility() == View.GONE) {
                     incomesView.setVisibility(View.VISIBLE);
                 }
             }
         });
     }
 
-    private List<AccountsDatesFotIncAdapter> makeListAccDatesForIncAdapter(List<Income> incomes){
-        List<AccountsDatesFotIncAdapter> accountsDate = new ArrayList<AccountsDatesFotIncAdapter>();
-        for (Income income: incomes) {
-            for (Accounts a: incomeViewModel.getListAccounts().getValue()){
-                if (a.getId() == income.getAccountsId()){
-                    accountsDate.add(new AccountsDatesFotIncAdapter(a.getName(), a.getCurrencySymbol(),a.getCurrencyCharCode()));
+    private List<AccountsDatesFotIncAdapter> makeListAccDatesForIncAdapter(List<Income> incomes) {
+        List<AccountsDatesFotIncAdapter> accountsDate = new ArrayList<>();
+        for (Income income : incomes) {
+            List<Accounts> accountsList = incomeViewModel.getListAccounts().getValue();
+            if (accountsList == null) {
+                continue;
+            }
+            for (Accounts a : accountsList) {
+                if (a.getId() == income.getAccountsId()) {
+                    accountsDate.add(new AccountsDatesFotIncAdapter(a.getName(), a.getCurrencySymbol(), a.getCurrencyCharCode()));
                     break;
                 }
             }
@@ -142,31 +173,30 @@ public class FragmentIncome extends Fragment {
         return accountsDate;
     }
 
-    private void getAccountsFromDb() {
-        AppDB db = AppDB.getDb(getContext());
-        if (accountsDao == null) {
-            accountsDao = db.accountsDao();
-        }
-        if (incomeDao == null) {
-            incomeDao = db.incomeDao();
-        }
+    private void getAccAndIncomeTypesFromDb() {
+        getDaos();
         Executors.newSingleThreadExecutor().execute(new Runnable() {
             @Override
             public void run() {
+                incomeTypeList = incomeTypeDao.getAllIncomeTypes();
                 incomeViewModel.setListAccounts(accountsDao.getAllAccounts());
             }
         });
     }
 
-    private void getIncomesFromDb() {
-
+    private void getDaos() {
         AppDB db = AppDB.getDb(getContext());
         if (accountsDao == null) {
             accountsDao = db.accountsDao();
-        }
-        if (incomeDao == null) {
+            incomeTypeDao = db.incomeTypeDao();
             incomeDao = db.incomeDao();
         }
+    }
+
+    private void getIncomesFromDb() {
+
+        getDaos();
+
         Executors.newSingleThreadExecutor().execute(() -> {
             if (swAllAccounts.isChecked()) {
                 adapterForIncome.setPrintAccount(true);
@@ -181,7 +211,7 @@ public class FragmentIncome extends Fragment {
 
     private void initialisation() {
         incomeViewModel = new IncomeViewModel();
-        appPreferences = this.getActivity().getSharedPreferences(Constante.preferences, getActivity().MODE_PRIVATE);
+        appPreferences = this.getActivity().getSharedPreferences(Constante.preferences, Context.MODE_PRIVATE);
         calendar = Calendar.getInstance();
         dateForNewInc = LocalDate.of(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH) + 1, calendar.get(Calendar.DATE));
 
@@ -198,6 +228,8 @@ public class FragmentIncome extends Fragment {
         incomesView.setLayoutManager(new LinearLayoutManager(getContext()));
         incomesView.setAdapter(adapterForIncome);
         accountId = appPreferences.getInt(Constante.defAccIdName, Constante.defAccIdValue);
+
+        mapIncomeType = new HashMap<>();
     }
 
     private void findInterfaceItems(View view) {
@@ -214,17 +246,26 @@ public class FragmentIncome extends Fragment {
         minus = view.findViewById(R.id.textViewMinus);
         incomesView = view.findViewById(R.id.recyclerViewIncome);
         swAllAccounts = view.findViewById(R.id.swAllAccounts);
+        incomeType = view.findViewById(R.id.incomeType);
     }
 
     private void setButtonPlusSymbol() {
         if (editTextAmount.getVisibility() == View.GONE) {
-            buttonPlus.setText("+");
+            buttonPlus.setText(getText(R.string.add));
         } else {
-            buttonPlus.setText("-");
+            buttonPlus.setText(getText(R.string.to_filter));
         }
     }
 
     private void setListeners() {
+        incomeType.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (hasFocus) {
+                    incomeType.showDropDown();
+                }
+            }
+        });
         buttonPlus.setOnClickListener(v -> {
             if (editTextAmount.getVisibility() == View.GONE) {
                 setFilterVisibility(false);
@@ -260,17 +301,17 @@ public class FragmentIncome extends Fragment {
         editTextAmount.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
+                //the method is not used in the application, but it must be implemented because it is specified in the interface.
             }
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                    buttonAdd.setEnabled(s.length() > 0);
+                buttonAdd.setEnabled(s.length() > 0);
             }
 
             @Override
             public void afterTextChanged(Editable s) {
-
+                //the method is not used in the application, but it must be implemented because it is specified in the interface.
             }
         });
 
@@ -278,8 +319,11 @@ public class FragmentIncome extends Fragment {
             addInDb();
             editTextAmount.setText("");
             editTextAmount.clearFocus();
-            InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-            imm.hideSoftInputFromWindow(editTextAmount.getWindowToken(), 0);
+            Context context = getContext();
+            if (context != null) {
+                InputMethodManager imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(editTextAmount.getWindowToken(), 0);
+            }
         });
 
         datePicker.setOnSelectedListener(new PickerCustom.OnSelectedListener() {
@@ -300,6 +344,8 @@ public class FragmentIncome extends Fragment {
                         buttonDate2.setText(String.valueOf(date2));
                         checkRange(true);
                         break;
+                    default:
+                        break;
                 }
                 getIncomesFromDb();
             }
@@ -316,9 +362,12 @@ public class FragmentIncome extends Fragment {
         spinnerAccounts.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                account = incomeViewModel.getListAccounts().getValue().get(position);
-                accountId = account.getId();
-                getIncomesFromDb();
+                List<Accounts> accounts = incomeViewModel.getListAccounts().getValue();
+                if (accounts != null) {
+                    account = incomeViewModel.getListAccounts().getValue().get(position);
+                    accountId = account.getId();
+                    getIncomesFromDb();
+                }
             }
 
             @Override
@@ -340,8 +389,15 @@ public class FragmentIncome extends Fragment {
         Executors.newSingleThreadExecutor().execute(new Runnable() {
             @Override
             public void run() {
+
+                int incTypePos = adapterForIncomeTypes.getPosition(incomeType.getText().toString());
+                long incTypeId = (incTypePos < 1) ? 1 : incomeTypeList.get(incTypePos).getId();
                 Income income = new Income();
+                if (!editTextName.getText().toString().isEmpty()) {
+                    income.setName(editTextName.getText().toString());
+                }
                 income.setAmount(amount);
+                income.setIncomeTypeId(incTypeId);
                 income.setDate(dateForNewInc.toString());
                 income.setAccountsId(accountId);
                 incomeDao.insert(income);
@@ -359,14 +415,14 @@ public class FragmentIncome extends Fragment {
             minus.setVisibility(View.VISIBLE);
             buttonDate1.setVisibility(View.VISIBLE);
             buttonDate2.setVisibility(View.VISIBLE);
-              swAllAccounts.setVisibility(View.VISIBLE);
+            swAllAccounts.setVisibility(View.VISIBLE);
 
         } else {
             notice2.setVisibility(View.GONE);
             minus.setVisibility(View.GONE);
             buttonDate1.setVisibility(View.GONE);
             buttonDate2.setVisibility(View.GONE);
-             swAllAccounts.setVisibility(View.GONE);
+            swAllAccounts.setVisibility(View.GONE);
         }
     }
 
@@ -376,6 +432,7 @@ public class FragmentIncome extends Fragment {
             buttonAdd.setVisibility(View.VISIBLE);
             editTextAmount.setVisibility(View.VISIBLE);
             editTextName.setVisibility(View.VISIBLE);
+            incomeType.setVisibility(View.VISIBLE);
             if (!spinnerAccounts.isEnabled()) {
                 spinnerAccounts.setEnabled(true);
             }
@@ -384,13 +441,14 @@ public class FragmentIncome extends Fragment {
             buttonAdd.setVisibility(View.GONE);
             editTextAmount.setVisibility(View.GONE);
             editTextName.setVisibility(View.GONE);
+            incomeType.setVisibility(View.GONE);
             if (swAllAccounts.isChecked()) {
                 spinnerAccounts.setEnabled(false);
             }
         }
     }
 
-    private void checkRange(Boolean setDate1) {
+    private void checkRange(boolean setDate1) {
         LocalDate date = date1.plusMonths(Constante.maxFiltersDatesDifference);
         if (date.isBefore(date2)) {
             if (setDate1) {

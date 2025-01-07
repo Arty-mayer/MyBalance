@@ -10,15 +10,17 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.mybalance.R;
-import com.example.mybalance.Utils.AccountsDatesFotIncAdapter;
-import com.example.mybalance.modelsDB.Accounts;
+import com.example.mybalance.utils.AccountsDatesFotIncAdapter;
+import com.example.mybalance.modelsDB.ExpenseType;
 import com.example.mybalance.modelsDB.Expenses;
 
 import java.util.List;
+import java.util.Map;
 
 public class AdapterForExpenses extends RecyclerView.Adapter<ExpensesViewHolder> {
     List<Expenses> list;
     List<AccountsDatesFotIncAdapter> accountsList;
+    Map<Long, ExpenseType> typesMap;
     boolean printAccount = false;
     Context context;
 
@@ -54,7 +56,12 @@ public class AdapterForExpenses extends RecyclerView.Adapter<ExpensesViewHolder>
             holder.accountsName.setVisibility(View.VISIBLE);
         } else {
             holder.accountsName.setVisibility(View.GONE);
-
+        }
+        if (typesMap !=null) {
+            ExpenseType type= typesMap.get(expenses.getExpenseTypeId());
+            if (type != null){
+                holder.categoryName.setText(type.getName());
+            }
         }
         holder.setListeners(context, list, position);
     }
@@ -79,5 +86,9 @@ public class AdapterForExpenses extends RecyclerView.Adapter<ExpensesViewHolder>
     public void updateList(List<Expenses> list) {
         this.list = list;
         notifyDataSetChanged();
+    }
+
+    public void setTypesMap (Map <Long, ExpenseType> typeMap){
+        this.typesMap = typeMap;
     }
 }

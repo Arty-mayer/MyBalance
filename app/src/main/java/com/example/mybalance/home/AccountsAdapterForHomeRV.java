@@ -11,8 +11,6 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.mybalance.R;
-import com.example.mybalance.Utils.Constante;
-import com.example.mybalance.income.IncomeViewHolder;
 
 import java.util.List;
 

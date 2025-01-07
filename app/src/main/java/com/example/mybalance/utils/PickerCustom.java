@@ -1,4 +1,4 @@
-package com.example.mybalance.Utils;
+package com.example.mybalance.utils;
 
 import android.widget.Button;
 

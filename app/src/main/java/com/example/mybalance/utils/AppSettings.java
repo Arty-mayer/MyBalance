@@ -1,13 +1,8 @@
-package com.example.mybalance.Utils;
+package com.example.mybalance.utils;
 
 import static androidx.core.app.PendingIntentCompat.getActivity;
 
 import android.content.Context;
-import android.content.SharedPreferences;
-import android.content.res.Configuration;
-import android.os.Build;
-
-import com.example.mybalance.MainActivity;
 
 import java.util.Locale;
 

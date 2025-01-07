@@ -1,6 +1,7 @@
 package com.example.mybalance.modelsDB;
 
 import androidx.room.Entity;
+import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
 @Entity
@@ -15,7 +16,7 @@ public class Month {
 
     public Month() {
     }
-
+@Ignore
     public Month(int year, int month, float incoming, float expenses, float balance) {
         this.year = year;
         this.month = month;

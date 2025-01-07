@@ -1,7 +1,8 @@
-package com.example.mybalance.Utils;
+package com.example.mybalance.utils;
 
-import java.util.List;
-import java.util.Stack;
+import static com.example.mybalance.data.AppDB.appContext;
+
+import com.example.mybalance.R;
 
 public class DbTableSQL {
     public static String[] table_currency_create = {
@@ -176,6 +177,13 @@ public class DbTableSQL {
             "INSERT INTO currency VALUES (165,986,'BRL','','Brazilian Real','Brasilianischer Real','Бразильский реал');",
             "INSERT INTO currency VALUES (166,990,'CLF','','Unidad de Fomento','Entwicklungswert','Единица развития');",
             "INSERT INTO currency VALUES (167,994,'XSU','','Sucre','Sucre','Сукре');"
+    };
+
+    public static String[] nullDates ={
+            "INSERT INTO IncomeType VALUES (1,'"+appContext.getString(R.string.others)+"','' ,0);",
+            "INSERT INTO ExpenseType VALUES (1,'"+appContext.getString(R.string.others)+"','' ,0);",
+         //   "INSERT INTO Accounts VALUES (1,'"+appContext.getString(R.string.cash)+"', '', 0, '' , 0, '' ,0, 118, 'USD', '$');"
+
     };
 
     public static String[] migration_2_3_DBUpdate = {

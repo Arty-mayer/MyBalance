@@ -1,3 +1,5 @@
+//TODO переписать LIST на MAP
+
 package com.example.mybalance.settings;
 
 import android.content.Context;
@@ -8,12 +10,13 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
+import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.mybalance.R;
-import com.example.mybalance.Utils.Constante;
+import com.example.mybalance.utils.Constante;
 import com.example.mybalance.data.AppDB;
 import com.example.mybalance.modelsDB.Currency;
 import com.example.mybalance.modelsDB.CurrencyDao;
@@ -26,7 +29,9 @@ public class Settings_editor extends AppCompatActivity {
     AutoCompleteTextView charCode;
     Button saveButton;
     Button closeButton;
+    TextView currencyTextView;
 
+    List<Currency> currencyList;
 
     int[] ids;
     String[] listOfCurrencyCharCodes;
@@ -52,6 +57,7 @@ public class Settings_editor extends AppCompatActivity {
         charCode = findViewById(R.id.symbol);
         saveButton = findViewById(R.id.saveButton);
         closeButton = findViewById(R.id.closeButton);
+        currencyTextView = findViewById(R.id.currencyNow);
     }
 
     private void initialization() {
@@ -68,31 +74,37 @@ public class Settings_editor extends AppCompatActivity {
         Executors.newSingleThreadExecutor().execute(new Runnable() {
             @Override
             public void run() {
-                List<Currency> currency = currencyDao.getAllCurrency();
+                currencyList = currencyDao.getAllCurrency();
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        createAdapterForSymbol(currency);
+                        createAdapterForSymbol(currencyList);
                     }
                 });
             }
         });
     }
 
-    private void createAdapterForSymbol(List<Currency> accountsList) {
-        listOfCurrencyCharCodes = new String[accountsList.size()];
-        ids = new int[accountsList.size()];
-        for (int i = 0; i < accountsList.size(); i++) {
-            listOfCurrencyCharCodes[i] = accountsList.get(i).getChar_code();
-            ids[i] = accountsList.get(i).getId();
-            if (selectedCurrencyId == accountsList.get(i).getId()) {
+    private void createAdapterForSymbol(List<Currency> currencyList) {
+        listOfCurrencyCharCodes = new String[currencyList.size()];
+        ids = new int[currencyList.size()];
+        selectedCurrencyNum = -1;
+        selectedCurrencyCharCode = "";
+        for (int i = 0; i < currencyList.size(); i++) {
+            listOfCurrencyCharCodes[i] = currencyList.get(i).getChar_code();
+            ids[i] = currencyList.get(i).getId();
+            if (selectedCurrencyId == currencyList.get(i).getId()) {
                 selectedCurrencyNum = i;
-                selectedCurrencyCharCode = accountsList.get(i).getChar_code();
+                selectedCurrencyCharCode = currencyList.get(i).getChar_code();
             }
         }
         currencyListAdapter.addAll(listOfCurrencyCharCodes);
         currencyListAdapter.notifyDataSetChanged();
-        charCode.setText(selectedCurrencyCharCode);
+
+        if (selectedCurrencyNum != -1) {
+            String currency = selectedCurrencyCharCode+" ("+currencyList.get(selectedCurrencyNum).getName()+")";
+            currencyTextView.setText(currency);
+        }
     }
 
     private void setListeners() {
@@ -103,6 +115,8 @@ public class Settings_editor extends AppCompatActivity {
                 //  Toast.makeText(getApplicationContext(),selectedCurrencyCharCode,Toast.LENGTH_SHORT).show();
                 if (selectedCurrencyId > 0) {
                     preferences.edit().putInt(Constante.defCurrencyId, selectedCurrencyId).apply();
+                    String currency = selectedCurrencyCharCode+" ("+currencyList.get(selectedCurrencyNum).getName()+")";
+                    currencyTextView.setText(currency);
                 }
             }
         });

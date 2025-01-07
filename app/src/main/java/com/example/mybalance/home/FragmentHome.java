@@ -24,7 +24,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.mybalance.R;
-import com.example.mybalance.Utils.Constante;
+import com.example.mybalance.utils.Constante;
 import com.example.mybalance.data.AppDB;
 import com.example.mybalance.modelsDB.Accounts;
 import com.example.mybalance.modelsDB.AccountsDao;

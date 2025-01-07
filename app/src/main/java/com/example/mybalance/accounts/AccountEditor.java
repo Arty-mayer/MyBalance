@@ -1,7 +1,6 @@
 package com.example.mybalance.accounts;
 
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -17,7 +16,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.mybalance.R;
 import com.example.mybalance.data.AppDB;
-import com.example.mybalance.Utils.Constante;
+import com.example.mybalance.utils.Constante;
 import com.example.mybalance.modelsDB.Accounts;
 import com.example.mybalance.modelsDB.AccountsDao;
 import com.example.mybalance.modelsDB.Currency;

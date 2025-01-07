@@ -17,17 +17,20 @@ public interface IncomeDao {
     void delete(Income income);
 
     @Update
-    void updeate(Income income);
+    void update(Income income);
 
     @Query("SELECT * FROM Income")
     List<Income> getAllIncome();
 
-    @Query("SELECT * FROM Income WHERE accountsId = :id")
+    @Query("SELECT * FROM Income WHERE id = :id")
+    Income getIncomeById(long id);
+
+    @Query("SELECT * FROM Income WHERE accountsId = :id ORDER BY date")
     List<Income> getIncomesByAccountsId(int id);
 
-    @Query("SELECT * FROM Income WHERE date BETWEEN :date1 AND :date2")
+    @Query("SELECT * FROM Income WHERE date BETWEEN :date1 AND :date2 ORDER BY date")
     List<Income> getIncomesRange(String date1, String date2);
 
-    @Query("SELECT * FROM Income WHERE accountsId = :id AND date BETWEEN :date1 AND :date2")
+    @Query("SELECT * FROM Income WHERE accountsId = :id AND date BETWEEN :date1 AND :date2 ORDER BY date")
     List<Income> getIncomesRangeByAccount(String date1, String date2, int id);
 }

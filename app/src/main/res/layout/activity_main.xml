@@ -30,15 +30,15 @@
         android:itemPadding="0dp"
 
         android:padding="0pt"
-        app:backgroundTint="?attr/colorSurfaceInverse"
-        app:itemActiveIndicatorStyle="@null"
 
+        app:backgroundTint="?attr/colorSurfaceInverse"
+
+        app:itemActiveIndicatorStyle="@null"
         app:itemBackground="@drawable/item_navigation_bottom_menu"
+
 
         app:itemHorizontalTranslationEnabled="true"
         app:itemIconSize="0dp"
-
-
         app:itemTextColor="?attr/colorOnPrimary"
         app:labelVisibilityMode="labeled"
         app:menu="@menu/navi_bar" />

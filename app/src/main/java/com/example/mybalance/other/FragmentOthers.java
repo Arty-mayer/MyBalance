@@ -45,7 +45,7 @@ public class FragmentOthers extends Fragment {
         rv_others.setLayoutManager(layoutManager);
         AdapterForOthers adapter = new AdapterForOthers();
         rv_others.setAdapter(adapter);
-        menuItems = new OthersMenuItems();
+        menuItems = new OthersMenuItems(getContext());
 
         onItemClickListener = new OnItemClickListener() {
             @Override

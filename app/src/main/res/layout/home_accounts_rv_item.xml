@@ -97,7 +97,7 @@
             app:srcCompat="@drawable/arrow_up" />
 
         <TextView
-            android:id="@+id/expenses"
+            android:id="@+id/incomes"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="0dp"
@@ -117,7 +117,7 @@
             app:srcCompat="@drawable/arrow_dn" />
 
         <TextView
-            android:id="@+id/incomes"
+            android:id="@+id/expenses"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="0dp"

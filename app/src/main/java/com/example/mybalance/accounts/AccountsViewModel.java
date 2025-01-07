@@ -11,25 +11,27 @@ import java.util.List;
 
 public class AccountsViewModel extends ViewModel {
 
-private final MutableLiveData <List<Accounts>> accountsList = new MutableLiveData<>();
+    private final MutableLiveData<List<Accounts>> accountsList = new MutableLiveData<>();
 
-public void addAccount (Accounts account){
-    List<Accounts> list = accountsList.getValue();
-    if (list == null){
-        list = new ArrayList<>();
+    public void addAccount(Accounts account) {
+        List<Accounts> list = accountsList.getValue();
+        if (list == null) {
+            list = new ArrayList<>();
+        }
+        List<Accounts> newList = new ArrayList<>(list);
+        newList.add(account);
+        accountsList.postValue(newList);
     }
-    List<Accounts> newList = new ArrayList<>(list);
-    newList.add(account);
-    accountsList.postValue(newList);
-}
+
     public LiveData<List<Accounts>> getAccountsList() {
         return accountsList;
     }
 
-    public void setAccountsListOnUI(List<Accounts> list){
+    public void setAccountsListOnUI(List<Accounts> list) {
         accountsList.setValue(list);
     }
-    public void setAccountsList(List<Accounts> list){
+
+    public void setAccountsList(List<Accounts> list) {
         accountsList.postValue(list);
     }
 }

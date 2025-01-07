@@ -1,4 +1,4 @@
-package com.example.mybalance.Utils;
+package com.example.mybalance.utils;
 
 public class Constante {
     public static String preferences = "myBalancePref";
@@ -9,6 +9,6 @@ public class Constante {
     public static int defAccIdValue = 1;
 
     public static String defCurrencyId = "defCurrencyId";
-    public static int defCurrecyIdValue = 118;
+    public static int defCurrecyIdValue = 0;
 
 }

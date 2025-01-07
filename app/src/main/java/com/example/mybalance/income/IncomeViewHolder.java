@@ -20,6 +20,7 @@ public class IncomeViewHolder extends RecyclerView.ViewHolder {
     TextView amount;
     TextView name;
     TextView accountsName;
+    TextView categoryName;
     Button buttonEdit;
 
     public IncomeViewHolder(@NonNull View itemView) {
@@ -30,9 +31,10 @@ public class IncomeViewHolder extends RecyclerView.ViewHolder {
     private void findInterfaceItems(View view) {
         date = view.findViewById(R.id.tvDate);
         amount = view.findViewById(R.id.tvAmount);
-        name = view.findViewById(R.id.vtName);
+        name = view.findViewById(R.id.textViewName);
         buttonEdit = view.findViewById(R.id.editButton);
         accountsName = view.findViewById(R.id.accountsName);
+        categoryName = view.findViewById(R.id.categoryName);
     }
 
     public void setListeners(Context context, List<Income> list, int position){
@@ -41,7 +43,7 @@ public class IncomeViewHolder extends RecyclerView.ViewHolder {
             public void onClick(View v) {
                 long incomesId = list.get(position).getId();
                 Intent intent = new Intent(context, IncomeEditor.class);
-                intent.putExtra("incomeId", incomesId);
+                intent.putExtra("Id", incomesId);
                 context.startActivity(intent);
             }
         });

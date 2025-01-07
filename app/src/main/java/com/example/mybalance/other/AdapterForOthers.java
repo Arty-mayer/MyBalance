@@ -33,7 +33,9 @@ public class AdapterForOthers extends RecyclerView.Adapter<OthersViewHolder> {
         if (list.itemsList.get(position).classActivity == null){
             holder.name.setEnabled(false);
         }
-        holder.setListeners(listener, position);
+        else {
+            holder.setListeners(listener, position);
+        }
     }
 
     @Override

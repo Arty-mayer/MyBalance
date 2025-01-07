@@ -1,7 +1,11 @@
 package com.example.mybalance.modelsDB;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
+
+import org.jetbrains.annotations.NotNull;
 
 @Entity
 public class Accounts {
@@ -45,23 +49,10 @@ public class Accounts {
     public Accounts() {
     }
 
-
-    /*
-        public Accounts(String name, String description, float amount, String lastIncomeDate, float lastIncomeAmount, String lastExpensesDate, float lastExpensesAmount) {
-
-            this.name = name;
-            this.description = description;
-            this.amount = amount;
-            this.lastIncomeDate = lastIncomeDate;
-            this.lastIncomeAmount = lastIncomeAmount;
-            this.lastExpensesDate = lastExpensesDate;
-            this.lastExpensesAmount = lastExpensesAmount;
-        }
-    */
+    @NotNull
     public int getId() {
         return id;
     }
-
 
     public String getName() {
         return name;
@@ -117,6 +108,11 @@ public class Accounts {
 
     public void setLastExpensesAmount(float lastExpensesAmount) {
         this.lastExpensesAmount = lastExpensesAmount;
+    }
+
+    @Override
+    public String toString (){
+        return name;
     }
 }
 

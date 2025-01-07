@@ -29,6 +29,8 @@
         <activity android:name="com.example.mybalance.income.IncomeEditor" />
         <activity android:name="com.example.mybalance.expenses.ExpensesEditor" />
         <activity android:name="com.example.mybalance.settings.Settings_editor" />
+        <activity android:name="com.example.mybalance.accounts.AccountsEditor" />
+        <activity android:name="com.example.mybalance.types.TypesEditorActivity" />
 
     </application>
 

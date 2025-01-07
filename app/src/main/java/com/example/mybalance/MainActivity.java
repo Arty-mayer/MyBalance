@@ -4,19 +4,21 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
 
-import com.example.mybalance.Utils.AppSettings;
-import com.example.mybalance.Utils.Constante;
-import com.example.mybalance.accounts.FragmentAccounts;
+import com.example.mybalance.utils.AppSettings;
+import com.example.mybalance.utils.Constante;
+import com.example.mybalance.accounts.AccountsEditor;
 import com.example.mybalance.expenses.FragmentExpenses;
 import com.example.mybalance.home.FragmentHome;
 import com.example.mybalance.income.FragmentIncome;
 import com.example.mybalance.other.FragmentOthers;
+import com.example.mybalance.settings.Settings_editor;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
 
@@ -29,37 +31,88 @@ public class MainActivity extends AppCompatActivity {
     BottomNavigationView bottomNavigationView;
     ProgressBar progBar;
     AppSettings appSettings;
+    SharedPreferences preferences;
+    boolean firstLaunch = true;
+    boolean acountsActivity = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        setDefaultSettings();
-        appSettings = new AppSettings(getApplicationContext());
+        preferences = this.getSharedPreferences(Constante.preferences, this.MODE_PRIVATE);
+        if (!preferences.contains(Constante.defCurrencyId)) {
+            firstLaunch = true;
+            Intent intent = new Intent(this, Settings_editor.class);
+            startActivity(intent);
+        }else {
+            firstLaunch = false;
+            setDefaultSettings();
+            appSettings = new AppSettings(getApplicationContext());
+            findInterfaces();
+            setListeners();
+            openDB();
+        }
+    }
 
-        progBar = findViewById(R.id.progress_bar);
-        bottomNavigationView = findViewById(R.id.bottom_navigation);
-        bottomNavigationView.setDefaultFocusHighlightEnabled(false);
-        bottomNavigationView.setSelectedItemId(R.id.nav_home);
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (firstLaunch && acountsActivity){
+            firstLaunch = false;
+            Intent intent = new Intent(this, AccountsEditor.class);
+            startActivity(intent);
+        }
+        if (firstLaunch){
+            acountsActivity = true;
 
+            setDefaultSettings();
+            appSettings = new AppSettings(getApplicationContext());
+            findInterfaces();
+            setListeners();
+            openDB();
+
+        }
+    }
+
+    private void openDB() {
+        //setUIEnabled(false);
+        progBar.setVisibility(View.VISIBLE);
+
+        Executors.newSingleThreadExecutor().execute(() -> {
+            AppDB db = AppDB.getDb(this);
+            db.getOpenHelper().getWritableDatabase();
+
+            runOnUiThread(() -> {
+                progBar.setVisibility(View.GONE);
+                //setUIEnabled(true);
+
+                // Загрузка первого фрагмента по умолчанию
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.fragment_container, new FragmentHome())
+                        .commit();
+            });
+        });
+    }
+
+    public void setListeners() {
 
         bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 Fragment selectedFragment = null;
-                if (item.getItemId() == R.id.nav_accounts) {
-                    selectedFragment = new FragmentAccounts();
-                }
+//                if (item.getItemId() == R.id.nav_reports) {
+//                    selectedFragment = new FragmentReports();
+//                }
                 if (item.getItemId() == R.id.nav_home) {
                     selectedFragment = new FragmentHome();
                 }
-                if (item.getItemId() == R.id.nav_income){
+                if (item.getItemId() == R.id.nav_income) {
                     selectedFragment = new FragmentIncome();
                 }
-                if (item.getItemId() == R.id.nav_expenses){
+                if (item.getItemId() == R.id.nav_expenses) {
                     selectedFragment = new FragmentExpenses();
                 }
-                if (item.getItemId() == R.id.nav_others){
+                if (item.getItemId() == R.id.nav_others) {
                     selectedFragment = new FragmentOthers();
                 }
 
@@ -73,24 +126,13 @@ public class MainActivity extends AppCompatActivity {
                 return false;
             }
         });
+    }
 
-
-        setUIEnabled(false);
-        progBar.setVisibility(View.VISIBLE);
-
-        Executors.newSingleThreadExecutor().execute(() -> {
-            AppDB db = AppDB.getDb(this);
-            db.getOpenHelper().getWritableDatabase();
-            runOnUiThread(() -> {
-                progBar.setVisibility(View.GONE);
-                setUIEnabled(true);
-
-                // Загрузка первого фрагмента по умолчанию
-                getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.fragment_container, new FragmentHome())
-                        .commit();
-            });
-        });
+    private void findInterfaces() {
+        progBar = findViewById(R.id.progress_bar);
+        bottomNavigationView = findViewById(R.id.bottom_navigation);
+        bottomNavigationView.setDefaultFocusHighlightEnabled(false);
+        bottomNavigationView.setSelectedItemId(R.id.nav_home);
     }
 
     private void setUIEnabled(boolean enabled) {
@@ -101,15 +143,15 @@ public class MainActivity extends AppCompatActivity {
             bottomNavigationView.setVisibility(View.GONE);
         }
     }
-    private void setDefaultSettings (){
-        SharedPreferences preferences = this.getSharedPreferences(Constante.preferences, this.MODE_PRIVATE);
-        if (preferences.contains(Constante.defAccIdName)){
-            return;
-       }
 
+    private void setDefaultSettings() {
+
+        if (preferences.contains(Constante.defAccIdName)) {
+            return;
+        }
         SharedPreferences.Editor editor = preferences.edit();
         editor.putInt(Constante.defAccIdName, Constante.defAccIdValue);
-        editor.putInt(Constante.defCurrencyId, Constante.defCurrecyIdValue);
+       // editor.putInt(Constante.defCurrencyId, Constante.defCurrecyIdValue);
         editor.apply();
 
     }

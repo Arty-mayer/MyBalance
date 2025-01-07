@@ -1,6 +1,7 @@
 package com.example.mybalance.expenses;
 
 import android.content.Context;
+import androidx.appcompat.widget.SwitchCompat;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.Editable;
@@ -11,11 +12,11 @@ import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.Spinner;
-import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -27,12 +28,14 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.mybalance.R;
-import com.example.mybalance.Utils.AccountsDatesFotIncAdapter;
-import com.example.mybalance.Utils.Constante;
-import com.example.mybalance.Utils.PickerCustom;
+import com.example.mybalance.utils.AccountsDatesFotIncAdapter;
+import com.example.mybalance.utils.Constante;
+import com.example.mybalance.utils.PickerCustom;
 import com.example.mybalance.data.AppDB;
 import com.example.mybalance.modelsDB.Accounts;
 import com.example.mybalance.modelsDB.AccountsDao;
+import com.example.mybalance.modelsDB.ExpenseType;
+import com.example.mybalance.modelsDB.ExpenseTypeDao;
 import com.example.mybalance.modelsDB.Expenses;
 import com.example.mybalance.modelsDB.ExpensesDao;
 
@@ -40,7 +43,9 @@ import java.time.LocalDate;
 import java.time.YearMonth;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.Executors;
 
 public class FragmentExpenses extends Fragment {
@@ -50,12 +55,14 @@ public class FragmentExpenses extends Fragment {
     Button buttonDate;
     Button buttonAdd;
     EditText editTextAmount;
+    EditText editTextName;
     Spinner spinnerAccounts;
     TextView notice1;
     TextView notice2;
     TextView minus;
     RecyclerView expensesView;
-    Switch swAllAccounts;
+    SwitchCompat swAllAccounts;
+    AutoCompleteTextView expenseType;
 
     ExpensesViewModel expensesViewModel;
     ArrayAdapter<String> adapterForSpinner = null;
@@ -68,12 +75,17 @@ public class FragmentExpenses extends Fragment {
     // db
     ExpensesDao expensesDao = null;
     AccountsDao accountsDao = null;
+    ExpenseTypeDao expenseTypeDao = null;
 
     LocalDate dateForNewInc;
     LocalDate date1;
     LocalDate date2;
     int accountId = 0;
     Accounts account;
+    List<ExpenseType> expenseTypeList;
+
+    ArrayAdapter<String> adapterForExpenseTypes;
+    Map<Long, ExpenseType> mapExpenseType;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -89,7 +101,13 @@ public class FragmentExpenses extends Fragment {
         setButtonPlusSymbol();
         setListeners();
         setObservers();
-        getAccountsFromDb();
+        getAccAndExpenseTypesFromDb();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        getAccAndExpenseTypesFromDb();
     }
 
     private void setObservers() {
@@ -110,6 +128,16 @@ public class FragmentExpenses extends Fragment {
                 adapterForSpinner.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                 spinnerAccounts.setAdapter(adapterForSpinner);
                 spinnerAccounts.setSelection(selectedPosition);
+
+                List<String> itemsForTypes = new ArrayList<>();
+                for (ExpenseType type : expenseTypeList) {
+                    itemsForTypes.add(type.getName());
+                    mapExpenseType.put(type.getId(), type);
+                }
+                adapterForExpenseTypes = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item, itemsForTypes);
+                adapterForExpenseTypes.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                expenseType.setAdapter(adapterForExpenseTypes);
+                adapterForExpenses.setTypesMap(mapExpenseType);
             }
         });
         expensesViewModel.getListExpenses().observe(getViewLifecycleOwner(), new Observer<List<Expenses>>() {
@@ -121,7 +149,7 @@ public class FragmentExpenses extends Fragment {
                 if (position > 0) {
                     expensesView.smoothScrollToPosition(adapterForExpenses.getItemCount() - 1);
                 }
-                if (expensesView.getVisibility() == View.GONE){
+                if (expensesView.getVisibility() == View.GONE) {
                     expensesView.setVisibility(View.VISIBLE);
                 }
             }
@@ -131,7 +159,11 @@ public class FragmentExpenses extends Fragment {
     private List<AccountsDatesFotIncAdapter> makeListAccDatesForExpAdapter(List<Expenses> expenses) {
         List<AccountsDatesFotIncAdapter> accountsDate = new ArrayList<>();
         for (Expenses expense : expenses) {
-            for (Accounts a : expensesViewModel.getListAccounts().getValue()) {
+            List<Accounts> accountsList = expensesViewModel.getListAccounts().getValue();
+            if (accountsList == null) {
+                continue;
+            }
+            for (Accounts a : accountsList) {
                 if (a.getId() == expense.getAccountsId()) {
                     accountsDate.add(new AccountsDatesFotIncAdapter(a.getName(), a.getCurrencySymbol(), a.getCurrencyCharCode()));
                     break;
@@ -141,31 +173,30 @@ public class FragmentExpenses extends Fragment {
         return accountsDate;
     }
 
-    private void getAccountsFromDb() {
-        AppDB db = AppDB.getDb(getContext());
-        if (accountsDao == null) {
-            accountsDao = db.accountsDao();
-        }
-        if (expensesDao == null) {
-            expensesDao = db.expensesDao();
-        }
+    private void getAccAndExpenseTypesFromDb() {
+        getDaos();
         Executors.newSingleThreadExecutor().execute(new Runnable() {
             @Override
             public void run() {
+                expenseTypeList = expenseTypeDao.getAllExpenseTypes();
                 expensesViewModel.setListAccounts(accountsDao.getAllAccounts());
             }
         });
     }
 
-    private void getExpensesFromDb() {
-
+    private void getDaos() {
         AppDB db = AppDB.getDb(getContext());
         if (accountsDao == null) {
             accountsDao = db.accountsDao();
-        }
-        if (expensesDao == null) {
+            expenseTypeDao = db.expenseTypeDao();
             expensesDao = db.expensesDao();
         }
+    }
+
+    private void getExpensesFromDb() {
+
+        getDaos();
+
         Executors.newSingleThreadExecutor().execute(() -> {
             if (swAllAccounts.isChecked()) {
                 adapterForExpenses.setPrintAccount(true);
@@ -197,6 +228,8 @@ public class FragmentExpenses extends Fragment {
         expensesView.setLayoutManager(new LinearLayoutManager(getContext()));
         expensesView.setAdapter(adapterForExpenses);
         accountId = appPreferences.getInt(Constante.defAccIdName, Constante.defAccIdValue);
+
+        mapExpenseType = new HashMap<>();
     }
 
     private void findInterfaceItems(View view) {
@@ -204,6 +237,7 @@ public class FragmentExpenses extends Fragment {
         buttonDate1 = view.findViewById(R.id.date1);
         buttonDate2 = view.findViewById(R.id.date2);
         buttonDate = view.findViewById(R.id.date);
+        editTextName = view.findViewById(R.id.editTextName);
         buttonAdd = view.findViewById(R.id.addButton);
         editTextAmount = view.findViewById(R.id.editTextAmount);
         spinnerAccounts = view.findViewById(R.id.mySpinner);
@@ -212,17 +246,26 @@ public class FragmentExpenses extends Fragment {
         minus = view.findViewById(R.id.textViewMinus);
         expensesView = view.findViewById(R.id.recyclerViewIncome);
         swAllAccounts = view.findViewById(R.id.swAllAccounts);
+        expenseType = view.findViewById(R.id.expenseType);
     }
 
     private void setButtonPlusSymbol() {
         if (editTextAmount.getVisibility() == View.GONE) {
-            buttonPlus.setText("+");
+            buttonPlus.setText(getText(R.string.add));
         } else {
-            buttonPlus.setText("-");
+            buttonPlus.setText(getText(R.string.to_filter));
         }
     }
 
     private void setListeners() {
+        expenseType.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (hasFocus) {
+                    expenseType.showDropDown();
+                }
+            }
+        });
         buttonPlus.setOnClickListener(v -> {
             if (editTextAmount.getVisibility() == View.GONE) {
                 setFilterVisibility(false);
@@ -276,8 +319,11 @@ public class FragmentExpenses extends Fragment {
             addInDb();
             editTextAmount.setText("");
             editTextAmount.clearFocus();
-            InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-            imm.hideSoftInputFromWindow(editTextAmount.getWindowToken(), 0);
+            Context context = getContext();
+            if (context != null) {
+                InputMethodManager imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(editTextAmount.getWindowToken(), 0);
+            }
         });
 
         datePicker.setOnSelectedListener(new PickerCustom.OnSelectedListener() {
@@ -298,6 +344,8 @@ public class FragmentExpenses extends Fragment {
                         buttonDate2.setText(String.valueOf(date2));
                         checkRange(true);
                         break;
+                    default:
+                        break;
                 }
                 getExpensesFromDb();
             }
@@ -314,9 +362,12 @@ public class FragmentExpenses extends Fragment {
         spinnerAccounts.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                account = expensesViewModel.getListAccounts().getValue().get(position);
-                accountId = account.getId();
-                getExpensesFromDb();
+                List<Accounts> accounts = expensesViewModel.getListAccounts().getValue();
+                if (accounts != null) {
+                    account = expensesViewModel.getListAccounts().getValue().get(position);
+                    accountId = account.getId();
+                    getExpensesFromDb();
+                }
             }
 
             @Override
@@ -338,8 +389,15 @@ public class FragmentExpenses extends Fragment {
         Executors.newSingleThreadExecutor().execute(new Runnable() {
             @Override
             public void run() {
+
+                int expTypePos = adapterForExpenseTypes.getPosition(expenseType.getText().toString());
+                long expTypeId = (expTypePos < 0) ? 0 : expenseTypeList.get(expTypePos).getId();
                 Expenses expense = new Expenses();
+                if (!editTextName.getText().toString().isEmpty()) {
+                    expense.setName(editTextName.getText().toString());
+                }
                 expense.setAmount(amount);
+                expense.setExpenseTypeId(expTypeId);
                 expense.setDate(dateForNewInc.toString());
                 expense.setAccountsId(accountId);
                 expensesDao.insert(expense);
@@ -373,7 +431,8 @@ public class FragmentExpenses extends Fragment {
             buttonDate.setVisibility(View.VISIBLE);
             buttonAdd.setVisibility(View.VISIBLE);
             editTextAmount.setVisibility(View.VISIBLE);
-
+            editTextName.setVisibility(View.VISIBLE);
+            expenseType.setVisibility(View.VISIBLE);
             if (!spinnerAccounts.isEnabled()) {
                 spinnerAccounts.setEnabled(true);
             }
@@ -381,6 +440,8 @@ public class FragmentExpenses extends Fragment {
             buttonDate.setVisibility(View.GONE);
             buttonAdd.setVisibility(View.GONE);
             editTextAmount.setVisibility(View.GONE);
+            editTextName.setVisibility(View.GONE);
+            expenseType.setVisibility(View.GONE);
             if (swAllAccounts.isChecked()) {
                 spinnerAccounts.setEnabled(false);
             }

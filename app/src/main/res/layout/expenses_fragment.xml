@@ -1,8 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
+
+    <AutoCompleteTextView
+        android:id="@+id/expenseType"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/edittext"
+        android:elevation="4dp"
+        android:ems="10"
+        android:hint="choose category"
+        android:padding="12dp"
+        android:text=""
+        android:textSize="16sp"
+        android:visibility="gone"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/editTextAmount" />
+
+    <EditText
+        android:id="@+id/editTextName"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+
+
+        android:layout_marginStart="8dp"
+        android:background="@drawable/edittext"
+        android:elevation="4dp"
+        android:ems="10"
+        android:hint="Название"
+        android:inputType=""
+        android:padding="12dp"
+        android:textSize="16sp"
+        android:visibility="gone"
+        app:layout_constraintStart_toEndOf="@+id/editTextAmount"
+        app:layout_constraintTop_toTopOf="@+id/editTextAmount" />
 
     <TextView
         android:id="@+id/topAccounts"
@@ -24,11 +60,13 @@
         android:id="@+id/divider"
         android:layout_width="0dp"
         android:layout_height="1dp"
+        android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
         android:background="@android:color/darker_gray"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editTextAmount" />
+        app:layout_constraintTop_toBottomOf="@+id/addButton" />
 
     <TextView
         android:id="@+id/textViewMinus"
@@ -63,18 +101,18 @@
         android:text="12.12.2024"
         app:cornerRadius="2dp"
         app:layout_constraintStart_toEndOf="@+id/incomeNotice2"
-        app:layout_constraintTop_toBottomOf="@+id/mySpinner" />
+        app:layout_constraintTop_toBottomOf="@+id/swAllAccounts" />
 
 
     <Button
         android:id="@+id/plusButton"
-        android:layout_width="50dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
 
         android:padding="1dp"
-        android:text="+"
+        android:text="@string/add"
         app:cornerRadius="2dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -83,10 +121,13 @@
         android:id="@+id/recyclerViewIncome"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:visibility="gone"
+        android:layout_marginStart="8dp"
 
         android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
         android:layoutAnimation="@anim/layout_animation"
+        android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
@@ -99,9 +140,9 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp"
 
 
+        android:layout_marginTop="8dp"
         android:background="@drawable/edittext"
         android:elevation="4dp"
         android:ems="10"
@@ -110,10 +151,8 @@
         android:padding="12dp"
         android:textSize="16sp"
         android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="@+id/date"
-        app:layout_constraintEnd_toStartOf="@+id/addButton"
-        app:layout_constraintStart_toEndOf="@+id/date"
-        app:layout_constraintTop_toTopOf="@+id/date" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/date1" />
 
     <Spinner
         android:id="@+id/mySpinner"
@@ -130,26 +169,26 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
         android:padding="8dp"
         android:text=""
         android:visibility="gone"
         app:cornerRadius="2dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/date1" />
+        app:layout_constraintBottom_toBottomOf="@+id/expenseType"
+        app:layout_constraintStart_toEndOf="@+id/expenseType"
+        app:layout_constraintTop_toTopOf="@+id/expenseType" />
 
     <Button
         android:id="@+id/addButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
         android:layout_marginEnd="8dp"
         android:enabled="false"
         android:text="@string/add"
         android:visibility="gone"
         app:cornerRadius="2dp"
-        app:layout_constraintBottom_toBottomOf="@+id/editTextAmount"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/editTextAmount" />
+        app:layout_constraintTop_toBottomOf="@+id/expenseType" />
 
     <TextView
         android:id="@+id/incomeNotice1"
@@ -167,25 +206,23 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:lines="2"
-        android:text="Filter(max\n 3 month):"
         android:gravity="end"
-
+        android:text="Filter:"
 
         app:layout_constraintBottom_toBottomOf="@+id/date1"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/date1" />
 
-    <Switch
+
+    <androidx.appcompat.widget.SwitchCompat
         android:id="@+id/swAllAccounts"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
         android:text="@string/all_accounts"
         android:visibility="visible"
-        app:layout_constraintBottom_toBottomOf="@+id/mySpinner"
-        app:layout_constraintStart_toEndOf="@+id/mySpinner"
-        app:layout_constraintTop_toTopOf="@+id/mySpinner" />
-
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/mySpinner" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

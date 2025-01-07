@@ -1,4 +1,4 @@
-package com.example.mybalance.Utils;
+package com.example.mybalance.utils;
 
 public class AccountsDatesFotIncAdapter {
     public final String name;

@@ -1,15 +1,12 @@
 package com.example.mybalance.accounts;
 
 import android.content.Context;
-import android.media.AudioAttributes;
 import android.media.SoundPool;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -18,9 +15,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -30,7 +25,6 @@ import java.util.List;
 import java.util.concurrent.Executors;
 
 import com.example.mybalance.R;
-import com.example.mybalance.Utils.AppSettings;
 
 import com.example.mybalance.data.AppDB;
 import com.example.mybalance.modelsDB.Accounts;
@@ -38,16 +32,17 @@ import com.example.mybalance.modelsDB.AccountsDao;
 import com.example.mybalance.modelsDB.Currency;
 import com.example.mybalance.modelsDB.CurrencyDao;
 
-public class FragmentAccounts extends Fragment {
+public class AccountsEditor extends AppCompatActivity {
     private RecyclerView recyclerView;
     private EditText newAccounsEditText;
     private Button addButton;
     private Button plusButton;
+    private Button backButton;
     private AccountsViewModel viewModel;
     private AdapterForAccounts adapter;
     private AutoCompleteTextView inputCurrencyCharCode;
     private AutoCompleteTextView inputCurrencyName;
-    private List<TextView> notices = new ArrayList<>();
+    private final List<TextView> notices = new ArrayList<>();
     private List<Currency> currencies = new ArrayList<>();
     AccountsDao daoAccounts;
     CurrencyDao daoCurrency;
@@ -55,31 +50,26 @@ public class FragmentAccounts extends Fragment {
     int soundClickId;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.accounts_fragment, container, false);
-    }
-
-    @Override
     public void onResume() {
         super.onResume();
         loadFromDb();
-
     }
 
     @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.accounts_activity);
 
-        findInterfaceItems(view);
+        findInterfaceItems();
         //  createSoundPool(view);
-        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         recyclerView.setLayoutManager(layoutManager);
 
         recycleViewUpdater();
         editTextHandler();
-        addButtonClickHandler();
         addPlusButtonHandler();
         loadFromDb();
+        setListeners();
     }
 /*
     private void createSoundPool(View view){
@@ -98,14 +88,14 @@ public class FragmentAccounts extends Fragment {
     }*/
 
     private void loadFromDb() {
-        AppDB db = AppDB.getDb(getContext());
+        AppDB db = AppDB.getDb(this);
         daoAccounts = db.accountsDao();
         daoCurrency = db.currencyDao();
         Executors.newSingleThreadExecutor().execute(() -> {
             try {
                 Log.d("DB_LOG", "Before fetching accounts");
                 currencies = daoCurrency.getAllCurrency();
-                requireActivity().runOnUiThread(new Runnable() {
+                runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
                         setCurrenciesInput();
@@ -119,16 +109,17 @@ public class FragmentAccounts extends Fragment {
         });
     }
 
-    private void findInterfaceItems(View view) {
-        newAccounsEditText = view.findViewById(R.id.editText_newAcc);
-        addButton = view.findViewById(R.id.addButton);
-        plusButton = view.findViewById(R.id.plusButton);
-        recyclerView = view.findViewById(R.id.recyclerViewAccs);
-        inputCurrencyCharCode = view.findViewById(R.id.symbol);
-        inputCurrencyName = view.findViewById(R.id.autoCompleteTextView2);
+    private void findInterfaceItems() {
+        newAccounsEditText = findViewById(R.id.editText_newAcc);
+        addButton = findViewById(R.id.addButton);
+        plusButton = findViewById(R.id.plusButton);
+        backButton = findViewById(R.id.backButton);
+        recyclerView = findViewById(R.id.recyclerViewAccs);
+        inputCurrencyCharCode = findViewById(R.id.symbol);
+        inputCurrencyName = findViewById(R.id.autoCompleteTextView2);
 
-        notices.add(view.findViewById(R.id.notice_1));
-        notices.add(view.findViewById(R.id.notice_2));
+        notices.add(findViewById(R.id.notice_1));
+        notices.add(findViewById(R.id.notice_2));
 
     }
 
@@ -136,7 +127,7 @@ public class FragmentAccounts extends Fragment {
         adapter = new AdapterForAccounts();
         recyclerView.setAdapter(adapter);
         viewModel = new AccountsViewModel();
-        viewModel.getAccountsList().observe(getViewLifecycleOwner(), new Observer<List<Accounts>>() {
+        viewModel.getAccountsList().observe(this, new Observer<List<Accounts>>() {
             @Override
             public void onChanged(List<Accounts> list) {
                 adapter.setCurrencies(currencies);
@@ -144,7 +135,10 @@ public class FragmentAccounts extends Fragment {
                 if (recyclerView.getVisibility() == View.GONE) {
                     recyclerView.setVisibility(View.VISIBLE);
                 }
-                recyclerView.smoothScrollToPosition(adapter.getItemCount() - 1);
+                if (!list.isEmpty()) {
+                    recyclerView.smoothScrollToPosition(adapter.getItemCount() - 1);
+                }
+
             }
         });
     }
@@ -170,7 +164,15 @@ public class FragmentAccounts extends Fragment {
         });
     }
 
-    private void addButtonClickHandler() {
+
+    void setListeners() {
+        backButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+
         addButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -182,8 +184,8 @@ public class FragmentAccounts extends Fragment {
                 Executors.newSingleThreadExecutor().execute(() -> {
                     Currency currency = daoCurrency.getByCharCode(newCharCode);
                     if (currency == null) {
-                        getActivity().runOnUiThread(() -> {
-                            InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+                        runOnUiThread(() -> {
+                            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                             imm.hideSoftInputFromWindow(newAccounsEditText.getWindowToken(), 0);
                         });
                         return;
@@ -194,7 +196,7 @@ public class FragmentAccounts extends Fragment {
                     account.setCurrencyCharCode(currency.getChar_code());
                     account.setCurrencySymbol(currency.getSymbol());
                     daoAccounts.insert(account);
-                    requireActivity().runOnUiThread(() -> {
+                    runOnUiThread(() -> {
                         newAccounsEditText.setText("");
                         newAccounsEditText.clearFocus();
                         inputCurrencyCharCode.setText("");
@@ -203,21 +205,12 @@ public class FragmentAccounts extends Fragment {
                         inputCurrencyName.clearFocus();
 
                         loadFromDb();
-                        InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+                        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                         imm.hideSoftInputFromWindow(newAccounsEditText.getWindowToken(), 0);
                     });
                 });
             }
         });
-    }
-
-    public void addPlusButtonHandler() {
-        if (inputCurrencyCharCode.getVisibility() == View.GONE) {
-            plusButton.setText("+");
-        } else {
-            plusButton.setText("-");
-        }
-        plusButton.setSoundEffectsEnabled(false);
 
         plusButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -248,6 +241,15 @@ public class FragmentAccounts extends Fragment {
         });
     }
 
+    public void addPlusButtonHandler() {
+        if (inputCurrencyCharCode.getVisibility() == View.GONE) {
+            plusButton.setText("+");
+        } else {
+            plusButton.setText("-");
+        }
+        //plusButton.setSoundEffectsEnabled(false);
+    }
+
     private void setCurrenciesInput() {
 
         String[] charCode = new String[currencies.size()];
@@ -255,20 +257,10 @@ public class FragmentAccounts extends Fragment {
 
         for (int i = 0; i < currencies.size(); i++) {
             charCode[i] = currencies.get(i).getChar_code();
-            switch (AppSettings.appLang) {
-                case "en":
-                    names[i] = currencies.get(i).getName();
-                    break;
-                case "ru":
-                    names[i] = currencies.get(i).getName_ru();
-                    break;
-                case "de":
-                    names[i] = currencies.get(i).getName_de();
-                    break;
-            }
+            names[i] = currencies.get(i).getName();
         }
-        ArrayAdapter<String> adapterForSymbols = new ArrayAdapter<>(getContext(), android.R.layout.simple_dropdown_item_1line, charCode);
-        ArrayAdapter<String> adapterForNames = new ArrayAdapter<>(getContext(), android.R.layout.simple_dropdown_item_1line, names);
+        ArrayAdapter<String> adapterForSymbols = new ArrayAdapter<>(this, android.R.layout.simple_dropdown_item_1line, charCode);
+        ArrayAdapter<String> adapterForNames = new ArrayAdapter<>(this, android.R.layout.simple_dropdown_item_1line, names);
 
         inputCurrencyCharCode.setAdapter(adapterForSymbols);
         inputCurrencyName.setAdapter(adapterForNames);

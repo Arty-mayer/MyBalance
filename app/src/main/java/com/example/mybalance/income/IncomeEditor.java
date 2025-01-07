@@ -1,28 +1,135 @@
 package com.example.mybalance.income;
 
-import android.content.Intent;
-import android.os.Bundle;
-import android.os.PersistableBundle;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Toast;
+import com.example.mybalance.common.CommonEditorIncExp;
+import com.example.mybalance.data.AppDB;
+import com.example.mybalance.modelsDB.AccountsDao;
 
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.mybalance.R;
+import com.example.mybalance.modelsDB.Income;
+import com.example.mybalance.modelsDB.IncomeDao;
+import com.example.mybalance.modelsDB.IncomeType;
+import com.example.mybalance.modelsDB.IncomeTypeDao;
 
-public class IncomeEditor extends AppCompatActivity {
-    long id;
+import java.time.LocalDate;
+import java.util.List;
+import java.util.concurrent.Executors;
+
+public class IncomeEditor extends CommonEditorIncExp {
+
+    ArrayAdapter<IncomeType> typesAdapter;
+    Income income;
+
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.income_editor);
-       // id = 0;
-        Intent intentParent = getIntent();
-        if (intentParent.hasExtra("incomeId")) {
-            id = intentParent.getLongExtra("incomeId", 0);
-        } else {
-            id = -1;
+    protected void createTypesAdapter() {
+        typesAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item);
+        typesAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        categoryField.setAdapter(typesAdapter);
+    }
+
+    @Override
+    protected void onItemSelectedCategoryField(AdapterView<?> parent, View view, int position, long id) {
+        if (typesAdapter.getItem(position) != null && typesAdapter.getItem(position).getId() != 0) {
+            typeId = typesAdapter.getItem(position).getId();
+            dataChangedNotify();
         }
-        Toast.makeText(this, String.valueOf(id), Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    protected void onTextChangedAmountField(CharSequence s, int start, int before, int count) {
+        if (Float.parseFloat(amountField.getText().toString()) != income.getAmount()) {
+            dataChangedNotify();
+        }
+    }
+
+    @Override
+    protected void onTextChangedNameField(CharSequence s, int start, int before, int count) {
+        String input = (nameField.getText() == null) ? "" : nameField.getText().toString();
+        String inDb = (income.getName() == null) ? "" : income.getName();
+        if (inDb.compareTo(input) != 0) {
+            dataChangedNotify();
+        }
+    }
+
+    @Override
+    protected void onDateChangedDateEdit(int day, int month, int year) {
+        LocalDate date = LocalDate.parse(income.getDate());
+        if (date.getDayOfMonth() != day || date.getMonthValue() != month || date.getYear() != year) {
+            dataChangedNotify();
+        }
+    }
+
+    protected void saveDataInDb() {
+        db = AppDB.getDb(this);
+        float amount = income.getAmount();
+        try {
+            amount = Float.parseFloat(amountField.getText().toString());
+        } catch (NumberFormatException e) {
+            Toast.makeText(this, "parseFloat error", Toast.LENGTH_SHORT).show();
+        }
+        income.setAmount(amount);
+        income.setName(nameField.getText().toString());
+        income.setIncomeTypeId(typeId);
+        String date = dateEdit.getDate();
+        if (date != null) {
+            income.setDate(date);
+        }
+        income.setAccountsId(accountId);
+        IncomeDao incomeDao = db.incomeDao();
+        Executors.newSingleThreadExecutor().execute(new Runnable() {
+            @Override
+            public void run() {
+                incomeDao.update(income);
+            }
+        });
+    }
+
+    protected void loadDataFromDb() {
+        db = AppDB.getDb(this);
+        IncomeDao incomeDao = db.incomeDao();
+        AccountsDao accountsDao = db.accountsDao();
+        IncomeTypeDao incomeTypeDao = db.incomeTypeDao();
+        Executors.newSingleThreadExecutor().execute(new Runnable() {
+            @Override
+            public void run() {
+                income = incomeDao.getIncomeById(id);
+                List<IncomeType> incomeTypeList = incomeTypeDao.getAllIncomeTypes();
+                typesAdapter.clear();
+                typesAdapter.addAll(incomeTypeList);
+                viewModel.setListAccounts(accountsDao.getAllAccounts());
+            }
+        });
+    }
+
+    protected void setDataInInterface() {
+        accountId = income.getAccountsId();
+        typeId = income.getIncomeTypeId();
+        setSelectedAccUndType();
+        accountsAdapter.notifyDataSetChanged();
+        typesAdapter.notifyDataSetChanged();
+        amountField.setText(String.valueOf(income.getAmount()));
+        nameField.setText(income.getName());
+        dateEdit.setDateStr(income.getDate());
+    }
+
+    protected void setSelectedAccUndType() {
+        for (int i = 0; i < accountsAdapter.getCount(); i++) {
+            if (income.getAccountsId() == accountsAdapter.getItem(i).getId()) {
+                accountsSpinner.setSelection(i);
+                break;
+            }
+        }
+        for (int i = 0; i < typesAdapter.getCount(); i++) {
+            if (typesAdapter.getItem(i).getId() == income.getIncomeTypeId()) {
+                IncomeType type = typesAdapter.getItem(i);
+                if (type != null && type.getName() != null) {
+                    categoryField.setText(type.getName());
+                }
+                break;
+            }
+        }
     }
 }
